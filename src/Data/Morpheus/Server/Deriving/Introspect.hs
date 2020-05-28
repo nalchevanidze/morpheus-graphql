@@ -60,6 +60,7 @@ import Data.Morpheus.Server.Types.Types
   ( MapKind,
     Pair,
   )
+import Data.Morpheus.Types.Directive (FieldDirective)
 import Data.Morpheus.Types.GQLScalar (GQLScalar (..))
 import Data.Morpheus.Types.Internal.AST
   ( ANY,
@@ -132,6 +133,11 @@ instance {-# OVERLAPPABLE #-} (GQLType a, IntrospectKind (KIND a) a) => Introspe
 instance Introspect a => Introspect (Maybe a) where
   isObject _ = False
   field _ = toNullableField . field (Proxy @a)
+  introspect _ = introspect (Proxy @a)
+
+instance Introspect a => Introspect (FieldDirective d a) where
+  isObject _ = isObject (Proxy @a)
+  field _ = field (Proxy @a)
   introspect _ = introspect (Proxy @a)
 
 -- List

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: ff4395428fd2dc68e88271ca8d311640a58ee5f975c5b54fe179852fe239659c
+-- hash: cf7e405527dd1cc5ccd47b8bd6817c916b5937b6af792a05259a7c08d21e9910
 
 name:           morpheus-graphql
 version:        0.12.0
@@ -371,6 +371,7 @@ library
       Data.Morpheus.Server
       Data.Morpheus.Document
       Data.Morpheus.Types.Internal.Subscription
+      Data.Morpheus.Types.Directive
   other-modules:
       Data.Morpheus.Server.Deriving.Decode
       Data.Morpheus.Server.Deriving.Encode

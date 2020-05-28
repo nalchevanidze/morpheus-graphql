@@ -24,6 +24,7 @@ import Data.Morpheus.Server.Types.Types
     Pair,
     Undefined (..),
   )
+import Data.Morpheus.Types.Directive (FieldDirective)
 import Data.Morpheus.Types.ID (ID)
 import Data.Morpheus.Types.Internal.AST
   ( DataFingerprint (..),
@@ -217,3 +218,8 @@ instance GQLType b => GQLType (a -> b) where
 instance GQLType ID where
   type KIND ID = SCALAR
   __typeFingerprint _ = internalFingerprint "ID" []
+
+instance GQLType a => GQLType (FieldDirective d a) where
+  type KIND (FieldDirective d a) = WRAPPER
+  __typeName _ = __typeName (Proxy @a)
+  __typeFingerprint _ = __typeFingerprint (Proxy @a)

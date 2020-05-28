@@ -20,6 +20,7 @@ module Data.Morpheus.Server.Deriving.Encode
   )
 where
 
+import Control.Monad.Trans (lift)
 import Data.Map (Map)
 import qualified Data.Map as M
   ( toList,
@@ -53,6 +54,7 @@ import Data.Morpheus.Server.Types.Types
 import Data.Morpheus.Types
   ( RootResolver (..),
   )
+import Data.Morpheus.Types.Directive (FieldDirective (..), ResolverDirective (..))
 import Data.Morpheus.Types.GQLScalar (GQLScalar (..))
 import Data.Morpheus.Types.Internal.AST
   ( FieldName,
@@ -96,6 +98,18 @@ instance {-# OVERLAPPABLE #-} (EncodeKind (KIND a) a o e m, LiftOperation o) => 
 -- MAYBE
 instance (Monad m, LiftOperation o, Encode a o e m) => Encode (Maybe a) o e m where
   encode = maybe (pure ResNull) encode
+
+instance
+  ( Monad m,
+    ResolverDirective directive m a,
+    LiftOperation o,
+    Encode a o e m
+  ) =>
+  Encode (FieldDirective directive a) o e m
+  where
+  encode FieldDirective =
+    lift (resolverDirective (Proxy @directive) :: m a)
+      >>= encode
 
 -- LIST []
 instance (Monad m, Encode a o e m, LiftOperation o) => Encode [a] o e m where

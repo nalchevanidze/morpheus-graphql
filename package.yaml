@@ -47,6 +47,7 @@ library:
     - Data.Morpheus.Server
     - Data.Morpheus.Document
     - Data.Morpheus.Types.Internal.Subscription
+    - Data.Morpheus.Types.Directive
   ghc-options: -Wall
 
 tests:

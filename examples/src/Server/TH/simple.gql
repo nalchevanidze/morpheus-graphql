@@ -1,5 +1,7 @@
+# directive @rest(url: String) on FIELD_DEFINITION
+
 type Query {
-  deity(name: String!): Deity!
+  deity(name: String!): Deity! @rest(url: "/api/v1/people")
 }
 
 type Deity {
