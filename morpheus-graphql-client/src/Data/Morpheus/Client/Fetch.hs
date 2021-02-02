@@ -60,7 +60,8 @@ class Fetch a where
     where
       gqlReq = GQLRequest {operationName = Just opName, query = pack strQuery, variables = fixVars (toJSON vars)}
       -------------------------------------------------------------
-      processResponse JSONResponse {responseData = Just x} = Right x
+      processResponse JSONResponse {responseData = Just x, responseErrors = Nothing} = Right x
+      processResponse JSONResponse {responseData = Just x, responseErrors = Just []} = Right x
       processResponse invalidResponse = Left (show invalidResponse)
   fetch :: (Monad m, FromJSON a) => (ByteString -> m ByteString) -> Args a -> m (Either String a)
 

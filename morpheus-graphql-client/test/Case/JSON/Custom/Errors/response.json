@@ -1,0 +1,19 @@
+{
+  "data": {
+    "queryTypeName": "TestQuery"
+  },
+  "errors": [
+    {
+      "locations": [
+        {
+          "line": 3,
+          "column": 7
+        }
+      ],
+      "path": [
+        "queryTypeName"
+      ],
+      "message": "Failure"
+    }
+  ]
+}
