@@ -10,7 +10,7 @@
 
 - more likely to rebuild when a file loaded by `defineByDocumentFile` or
   `defineByIntrospectionFile` is changed
-- response errors should always result in a fetch failure [#577](https://github.com/morpheusgraphql/morpheus-graphql/issues/577)
+- response errors should always result in a fetch failure [#577](https://github.com/morpheusgraphql/morpheus-graphql/issues/577) - Thanks @AlistairB
 
 ## 0.16.0 - 05.11.2020
 
