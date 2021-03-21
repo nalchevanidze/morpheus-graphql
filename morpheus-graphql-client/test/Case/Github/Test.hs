@@ -20,6 +20,8 @@ import Data.Morpheus.Client
   ( DecodeScalar (..),
     EncodeScalar (..),
     Fetch (..),
+    FetchError,
+    FetchResult (..),
     ScalarValue (..),
     gql,
   )
@@ -92,7 +94,7 @@ defineClientWith
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "Interface"
 
-client :: IO (Either String GetTags)
+client :: IO (Either FetchError (FetchResult GetTags))
 client =
   fetch
     resolver
@@ -107,38 +109,41 @@ testInterface = testCase "test Github interfaces" $ do
   assertEqual
     "test Github interface"
     ( Right
-        ( GetTags
-            { repository =
-                Just
-                  RepositoryRepository
-                    { refs =
-                        Just
-                          RepositoryRefsRefConnection
-                            { pageInfo =
-                                RepositoryRefsPageInfoPageInfo
-                                  { endCursor = Just "",
-                                    hasNextPage = False
-                                  },
-                              edges =
-                                Just
-                                  [ Just
-                                      RepositoryRefsEdgesRefEdge
-                                        { cursor = "",
-                                          node =
-                                            Just
-                                              RepositoryRefsEdgesNodeRef
-                                                { name = "",
-                                                  target =
-                                                    Just
-                                                      RepositoryRefsEdgesNodeTargetGitObject
-                                                        { __typename = ""
-                                                        }
-                                                }
-                                        }
-                                  ]
-                            }
-                    }
-            }
+        ( FetchResult
+          ( GetTags
+              { repository =
+                  Just
+                    RepositoryRepository
+                      { refs =
+                          Just
+                            RepositoryRefsRefConnection
+                              { pageInfo =
+                                  RepositoryRefsPageInfoPageInfo
+                                    { endCursor = Just "",
+                                      hasNextPage = False
+                                    },
+                                edges =
+                                  Just
+                                    [ Just
+                                        RepositoryRefsEdgesRefEdge
+                                          { cursor = "",
+                                            node =
+                                              Just
+                                                RepositoryRefsEdgesNodeRef
+                                                  { name = "",
+                                                    target =
+                                                      Just
+                                                        RepositoryRefsEdgesNodeTargetGitObject
+                                                          { __typename = ""
+                                                          }
+                                                  }
+                                          }
+                                    ]
+                              }
+                      }
+              }
+          )
+          []
         )
     )
     value

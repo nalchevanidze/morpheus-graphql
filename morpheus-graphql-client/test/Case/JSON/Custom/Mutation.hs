@@ -18,6 +18,8 @@ import Data.ByteString.Lazy.Char8
   )
 import Data.Morpheus.Client
   ( Fetch (..),
+    FetchError,
+    FetchResult (..),
     gql,
   )
 import Data.Text (Text)
@@ -52,7 +54,7 @@ defineClientWithJSON
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "JSON/Custom/Mutation"
 
-client :: IO (Either String TestMutation)
+client :: IO (Either FetchError (FetchResult TestMutation))
 client = fetch resolver ()
 
 test :: TestTree
@@ -61,9 +63,12 @@ test = testCase "test Mutation" $ do
   assertEqual
     "test custom Mutation"
     ( Right
-        ( TestMutation
-            { mutationTypeName = Just "TestMutation"
-            }
+        ( FetchResult
+          ( TestMutation
+              { mutationTypeName = Just "TestMutation"
+              }
+          )
+          []
         )
     )
     value

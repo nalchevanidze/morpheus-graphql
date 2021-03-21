@@ -16,9 +16,15 @@ where
 import Data.ByteString.Lazy.Char8
   ( ByteString,
   )
+import Data.Morpheus.Types.Error
+  ( GQLError (..),
+    Position (..)
+  )
 import Data.Morpheus.Client
   ( EncodeScalar (..),
     Fetch (..),
+    FetchError (..),
+    FetchResult (..),
     ScalarValue (..),
     gql,
   )
@@ -38,8 +44,8 @@ import Prelude
   ( Either (..),
     Eq (..),
     IO,
+    Maybe (..),
     Show,
-    String,
     ($),
   )
 
@@ -63,7 +69,7 @@ defineClientWithJSON
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "JSON/Custom/Errors"
 
-client :: IO (Either String TestQuery)
+client :: IO (Either FetchError (FetchResult TestQuery))
 client = fetch resolver ()
 
 test :: TestTree
@@ -71,6 +77,11 @@ test = testCase "test Errors" $ do
   value <- client
   assertEqual
     "test custom Errors"
-    ( Left "JSONResponse {responseData = Just (TestQuery {queryTypeName = Just \"TestQuery\"}), responseErrors = Just [GQLError {message = \"Failure\", locations = [Position {line = 3, column = 7}]}]}"
+    ( Right
+        ( FetchResult {
+            fetchResult = TestQuery {queryTypeName = Just "TestQuery"},
+            fetchErrors = [ GQLError { message = "Failure", locations = [Position {line = 3, column = 7}]} ]
+          }
+        )
     )
     value

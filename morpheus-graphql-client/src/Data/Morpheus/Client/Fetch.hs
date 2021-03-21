@@ -29,6 +29,10 @@ import Data.Morpheus.Internal.TH
     toCon,
     typeInstanceDec,
   )
+import Data.Morpheus.Client.Internal.Types
+  ( FetchError(..),
+    FetchResult(..)
+  )
 import Data.Morpheus.Types.IO
   ( GQLRequest (..),
   )
@@ -41,7 +45,6 @@ import Data.Text
   )
 import Language.Haskell.TH
 import Relude hiding (ByteString, Type)
-import Data.Morpheus.Client.Internal.Types (FetchError(..), FetchResult(..))
 
 fixVars :: A.Value -> Maybe A.Value
 fixVars x
@@ -63,7 +66,7 @@ class Fetch a where
       -------------------------------------------------------------
       processResponse JSONResponse {responseData = Just x, responseErrors = errors} = Right $ FetchResult x errors
       processResponse JSONResponse {responseData = Nothing, responseErrors = errors} = Left $ FetchNoResult errors
-  fetch :: (Monad m, FromJSON a) => (ByteString -> m ByteString) -> Args a -> m (Either String a)
+  fetch :: (Monad m, FromJSON a) => (ByteString -> m ByteString) -> Args a -> m (Either FetchError (FetchResult a))
 
 deriveFetch :: Type -> TypeName -> String -> Q [Dec]
 deriveFetch resultType typeName queryString =

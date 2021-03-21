@@ -4,6 +4,8 @@
 module Data.Morpheus.Client
   ( gql,
     Fetch (..),
+    FetchError(..),
+    FetchResult(..),
     defineQuery,
     defineByDocument,
     defineByDocumentFile,
@@ -28,6 +30,10 @@ import Data.Morpheus.Client.Fetch
   )
 import Data.Morpheus.Client.JSONSchema.Parse
   ( decodeIntrospection,
+  )
+import Data.Morpheus.Client.Internal.Types
+  ( FetchError(..),
+    FetchResult(..)
   )
 import Data.Morpheus.Core
   ( parseFullSchema,

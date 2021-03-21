@@ -19,7 +19,10 @@ import Data.Morpheus.Types.Internal.AST
     TypeName,
     VALID,
   )
-import Data.Morpheus.Types.Error (GQLError, GQLErrors)
+import Data.Morpheus.Types.Error
+  ( GQLError,
+    GQLErrors
+  )
 import Relude
 
 data TypeNameTH = TypeNameTH
@@ -46,9 +49,11 @@ data ClientDefinition = ClientDefinition
 data FetchError
   = FetchParseFailure String
   | FetchNoResult GQLErrors
+  deriving (Eq, Show)
 
 data FetchResult a
   = FetchResult {
     fetchResult :: a,
     fetchErrors :: [GQLError]
   }
+  deriving (Eq, Show)

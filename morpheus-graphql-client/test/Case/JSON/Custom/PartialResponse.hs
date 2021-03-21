@@ -19,6 +19,8 @@ import Data.ByteString.Lazy.Char8
 import Data.Morpheus.Client
   ( EncodeScalar (..),
     Fetch (..),
+    FetchError (..),
+    FetchResult (..),
     ScalarValue (..),
     gql,
   )
@@ -63,7 +65,7 @@ defineClientWithJSON
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "JSON/Custom/PartialResponse"
 
-client :: IO (Either String TestQuery)
+client :: IO (Either FetchError (FetchResult TestQuery))
 client = fetch resolver ()
 
 test :: TestTree
@@ -71,6 +73,7 @@ test = testCase "test PartialResponse" $ do
   value <- client
   assertEqual
     "test custom PartialResponse"
-    ( Left "Error in $.data.queryTypeName: parsing Text failed, expected String, but encountered Number"
+    ( Left
+        (FetchParseFailure "Error in $.data.queryTypeName: parsing Text failed, expected String, but encountered Number")
     )
     value
