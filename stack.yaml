@@ -1,5 +1,5 @@
-# 8.10.1
-resolver: nightly-2020-06-29
+# 8.10.4
+resolver: lts-17.7
 save-hackage-creds: false
 packages:
   - morpheus-graphql-examples-scotty
@@ -11,10 +11,7 @@ packages:
   - morpheus-graphql-app
   - .
 
-allow-newer: true
 extra-deps:
-  - servant-server-0.16.2
-  - servant-0.16.2
   - fraxl-0.3.0.0
   - dependent-map-0.2.4.0
   - dependent-sum-0.4
