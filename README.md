@@ -582,7 +582,7 @@ as you see, response type field name collision can be handled with GraphQL `alia
 with `fetch` you can fetch well typed response `GetHero`.
 
 ```haskell
-  fetchHero :: Args GetHero -> m (Either String GetHero)
+  fetchHero :: Args GetHero -> m (Either FetchError (FetchResult GetHero))
   fetchHero = fetch jsonRes args
       where
         args = GetHeroArgs {character = Person {name = "Zeus"}}
