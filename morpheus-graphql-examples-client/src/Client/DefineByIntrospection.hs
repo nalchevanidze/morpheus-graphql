@@ -19,6 +19,8 @@ import Data.Morpheus.Client
   ( DecodeScalar (..),
     EncodeScalar (..),
     Fetch (..),
+    FetchError,
+    FetchResult,
     ScalarValue (..),
     defineByIntrospectionFile,
     gql,
@@ -55,7 +57,7 @@ instance DecodeScalar Euro where
 defineByIntrospectionFile
   "assets/introspection.json"
   [gql|
-   
+
     # Query Hero with Compile time Validation
     query GetUser ($coordinates: Coordinates!)
       {
@@ -90,7 +92,7 @@ usersApi req = do
       <> " \"user\":{ \"email\":\"some email\" }"
       <> "}}"
 
-fetchUsers :: IO (Either String GetUser)
+fetchUsers :: IO (Either FetchError (FetchResult GetUser))
 fetchUsers = fetch usersApi userArgs
   where
     userArgs :: Args GetUser

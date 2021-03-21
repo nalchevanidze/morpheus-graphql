@@ -14,6 +14,8 @@ where
 import Data.ByteString.Lazy.Char8 (ByteString)
 import Data.Morpheus.Client
   ( Fetch (..),
+    FetchError,
+    FetchResult,
     defineByDocumentFile,
     gql,
   )
@@ -54,5 +56,5 @@ resolver b = runReq defaultHttpConfig $ do
       lbsResponse
       headers
 
-fetchFilms :: IO (Either String StarWarsFilms)
+fetchFilms :: IO (Either FetchError (FetchResult StarWarsFilms))
 fetchFilms = fetch resolver ()

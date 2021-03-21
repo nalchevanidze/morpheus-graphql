@@ -17,6 +17,8 @@ where
 import Data.ByteString.Lazy.Char8 (ByteString)
 import Data.Morpheus.Client
   ( Fetch (..),
+    FetchError,
+    FetchResult,
     defineByDocumentFile,
     gql,
   )
@@ -74,7 +76,7 @@ defineByDocumentFile
       }
   |]
 
-fetchUser :: (ByteString -> IO ByteString) -> IO (Either String GetUser)
+fetchUser :: (ByteString -> IO ByteString) -> IO (Either FetchError (FetchResult GetUser))
 fetchUser = flip fetch args
   where
     args :: Args GetUser
