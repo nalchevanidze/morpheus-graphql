@@ -5,6 +5,8 @@ module Data.Morpheus.Client.Internal.Types
     TypeNameTH (..),
     ClientDefinition (..),
     ClientConsD,
+    FetchResult (..),
+    FetchError (..)
   )
 where
 
@@ -17,6 +19,7 @@ import Data.Morpheus.Types.Internal.AST
     TypeName,
     VALID,
   )
+import Data.Morpheus.Types.Error (GQLError, GQLErrors)
 import Relude
 
 data TypeNameTH = TypeNameTH
@@ -39,3 +42,13 @@ data ClientDefinition = ClientDefinition
     clientTypes :: [ClientTypeDefinition]
   }
   deriving (Show)
+
+data FetchError
+  = FetchParseFailure String
+  | FetchNoResult GQLErrors
+
+data FetchResult a
+  = FetchResult {
+    fetchResult :: a,
+    fetchErrors :: [GQLError]
+  }

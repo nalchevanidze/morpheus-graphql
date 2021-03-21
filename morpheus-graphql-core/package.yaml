@@ -42,6 +42,7 @@ library:
     - Data.Morpheus.Core
     - Data.Morpheus.QuasiQuoter
     - Data.Morpheus.Error
+    - Data.Morpheus.Types.Error
     - Data.Morpheus.Types.IO
     - Data.Morpheus.Types.Internal.AST
     - Data.Morpheus.Types.GQLScalar

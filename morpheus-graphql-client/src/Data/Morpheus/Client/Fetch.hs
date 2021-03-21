@@ -41,6 +41,7 @@ import Data.Text
   )
 import Language.Haskell.TH
 import Relude hiding (ByteString, Type)
+import Data.Morpheus.Client.Internal.Types (FetchError(..), FetchResult(..))
 
 fixVars :: A.Value -> Maybe A.Value
 fixVars x
@@ -55,14 +56,13 @@ class Fetch a where
     FieldName ->
     (ByteString -> m ByteString) ->
     Args a ->
-    m (Either String a)
-  __fetch strQuery opName trans vars = (eitherDecode >=> processResponse) <$> trans (encode gqlReq)
+    m (Either FetchError (FetchResult a))
+  __fetch strQuery opName trans vars = ((first FetchParseFailure . eitherDecode) >=> processResponse) <$> trans (encode gqlReq)
     where
       gqlReq = GQLRequest {operationName = Just opName, query = pack strQuery, variables = fixVars (toJSON vars)}
       -------------------------------------------------------------
-      processResponse JSONResponse {responseData = Just x, responseErrors = Nothing} = Right x
-      processResponse JSONResponse {responseData = Just x, responseErrors = Just []} = Right x
-      processResponse invalidResponse = Left (show invalidResponse)
+      processResponse JSONResponse {responseData = Just x, responseErrors = errors} = Right $ FetchResult x errors
+      processResponse JSONResponse {responseData = Nothing, responseErrors = errors} = Left $ FetchNoResult errors
   fetch :: (Monad m, FromJSON a) => (ByteString -> m ByteString) -> Args a -> m (Either String a)
 
 deriveFetch :: Type -> TypeName -> String -> Q [Dec]
