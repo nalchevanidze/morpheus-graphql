@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "message": "offset=78:\nunexpected 'b'\nexpecting '}', Ignored, IgnoredTokens, OperationType, or white space\n",
+      "message": "offset=78:\nunexpected 'b'\nexpecting '#', '}', IgnoredTokens, or OperationType\n",
       "locations": [{ "line": 8, "column": 3 }]
     }
   ]

@@ -1,0 +1,24 @@
+"""
+qw
+q
+haha52352 "
+""
+
+3434
+"
+"""
+type MyType {
+  field: Int
+}
+
+"""
+qw
+q
+haha52352 "
+""
+
+""
+"""
+type Query {
+  name: String
+}

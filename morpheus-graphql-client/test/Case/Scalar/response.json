@@ -1,0 +1,8 @@
+{
+  "data": {
+    "booleanResolver": true,
+    "intResolver": 1242345,
+    "floatResolver": 21233.1234145,
+    "stringResolver": "Athens"
+  }
+}

@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "message": "offset=66:\nunexpected end of input\nexpecting '}', Ignored, IgnoredTokens, Selection, or white space\n",
+      "message": "offset=66:\nunexpected end of input\nexpecting '#', '}', IgnoredTokens, or Selection\n",
       "locations": [
         {
           "line": 5,

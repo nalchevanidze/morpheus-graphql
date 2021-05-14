@@ -9,8 +9,10 @@ module Data.Morpheus.Client
     defineQuery,
     defineByDocument,
     defineByDocumentFile,
+    defineByDocumentFile',
     defineByIntrospection,
     defineByIntrospectionFile,
+    defineByIntrospectionFile',
     ScalarValue (..),
     DecodeScalar (..),
     EncodeScalar (..),
@@ -64,10 +66,18 @@ defineByDocumentFile filePath args = do
   qAddDependentFile filePath
   defineByDocument (L.readFile filePath) args
 
+-- | This variant exposes 'Q FilePath' enabling the use of TH to generate the 'FilePath'. For example, https://hackage.haskell.org/package/file-embed-0.0.13.0/docs/Data-FileEmbed.html#v:makeRelativeToProject can be used to handle multi package projects more reliably.
+defineByDocumentFile' :: Q FilePath -> (ExecutableDocument, String) -> Q [Dec]
+defineByDocumentFile' qFilePath args = qFilePath >>= flip defineByDocumentFile args
+
 defineByIntrospectionFile :: FilePath -> (ExecutableDocument, String) -> Q [Dec]
 defineByIntrospectionFile filePath args = do
   qAddDependentFile filePath
   defineByIntrospection (L.readFile filePath) args
+
+-- | This variant exposes 'Q FilePath' enabling the use of TH to generate the 'FilePath'. For example, https://hackage.haskell.org/package/file-embed-0.0.13.0/docs/Data-FileEmbed.html#v:makeRelativeToProject can be used to handle multi package projects more reliably.
+defineByIntrospectionFile' :: Q FilePath -> (ExecutableDocument, String) -> Q [Dec]
+defineByIntrospectionFile' qFilePath args = qFilePath >>= flip defineByIntrospectionFile args
 
 defineByDocument :: IO ByteString -> (ExecutableDocument, String) -> Q [Dec]
 defineByDocument doc = defineQuery (schemaByDocument doc)

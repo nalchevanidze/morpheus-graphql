@@ -45,6 +45,7 @@ import Data.Morpheus.Types.Internal.AST
     hsTypeName,
     kindOf,
     mkConsEnum,
+    mkTypeRef,
     toFieldName,
   )
 import Language.Haskell.TH
@@ -178,11 +179,7 @@ genTypeContent _ _ typeName (DataUnion members) =
               originalField =
                 FieldDefinition
                   { fieldName = "un" <> toFieldName cName,
-                    fieldType =
-                      TypeRef
-                        { typeConName = utName,
-                          typeWrappers = []
-                        },
+                    fieldType = mkTypeRef utName,
                     fieldDescription = Nothing,
                     fieldDirectives = empty,
                     fieldContent = Nothing

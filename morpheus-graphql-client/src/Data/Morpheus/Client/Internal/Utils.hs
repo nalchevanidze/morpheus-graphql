@@ -14,7 +14,6 @@ import Relude
 removeDuplicates :: Eq a => [a] -> [a]
 removeDuplicates = fst . splitDuplicates
 
--- elems -> (unique elements, duplicate elems)
 splitDuplicates :: Eq a => [a] -> ([a], [a])
 splitDuplicates = collectElems ([], [])
   where

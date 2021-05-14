@@ -1,7 +1,7 @@
 {
   "data": {
     "__type": {
-      "description": "type Description: TestUnion\n\nsome random text for union type"
+      "description": "\ntype Description: TestUnion\n\nsome random text for union type\n"
     }
   }
 }

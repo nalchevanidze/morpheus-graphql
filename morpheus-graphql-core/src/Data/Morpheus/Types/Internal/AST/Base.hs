@@ -45,7 +45,6 @@ module Data.Morpheus.Types.Internal.AST.Base
     toGQLError,
     unitTypeName,
     unitFieldName,
-    anonymousRef,
   )
 where
 
@@ -126,11 +125,13 @@ instance Semigroup ValidationError where
 
 withPosition :: Maybe Position -> ValidationError -> ValidationError
 withPosition pos (ValidationError m ps) = ValidationError m (ps <> maybeToList pos)
+{-# INLINE withPosition #-}
 
 type ValidationErrors = [ValidationError]
 
 toGQLError :: ValidationError -> GQLError
 toGQLError (ValidationError m p) = GQLError m p
+{-# INLINE toGQLError #-}
 
 -- instance Lift InternalError where
 --   lift = liftString . readInternalError
@@ -141,9 +142,11 @@ toGQLError (ValidationError m p) = GQLError m p
 
 msgInternal :: (Msg a) => a -> InternalError
 msgInternal = InternalError . readMessage . msg
+{-# INLINE msgInternal #-}
 
 msgValidation :: (Msg a) => a -> ValidationError
 msgValidation = (`ValidationError` []) . msg
+{-# INLINE msgValidation #-}
 
 class Msg a where
   msg :: a -> Message
@@ -190,9 +193,11 @@ instance RenderGQL FieldName where
 
 intercalateName :: FieldName -> [FieldName] -> FieldName
 intercalateName (FieldName x) = FieldName . intercalate x . fmap readName
+{-# INLINE intercalateName #-}
 
 toFieldName :: TypeName -> FieldName
 toFieldName = FieldName . readTypeName
+{-# INLINE toFieldName #-}
 
 -- TypeName
 newtype TypeName = TypeName {readTypeName :: Text}
@@ -218,9 +223,11 @@ instance Lift TypeName where
 
 liftTypedString :: IsString a => Token -> Q (TExp a)
 liftTypedString = unsafeTExpCoerce . stringE . T.unpack
+{-# INLINE liftTypedString #-}
 
 liftString :: Token -> ExpQ
 liftString = stringE . T.unpack
+{-# INLINE liftString #-}
 
 instance Msg TypeName where
   msg TypeName {readTypeName} = Message $ "\"" <> readTypeName <> "\""
@@ -273,10 +280,11 @@ type MUTATION = 'Mutation
 
 type SUBSCRIPTION = 'Subscription
 
--- Document Reference with its Position
--- Position  only for error messages
--- includes position for debugging, where Ref "a" 1 === Ref "a" 3
+-- | Document Reference with its Position
 --
+-- Position is used only for error messages. that means:
+--
+-- Ref "a" 1 === Ref "a" 3
 data Ref name = Ref
   { refName :: name,
     refPosition :: Position
@@ -285,9 +293,6 @@ data Ref name = Ref
 
 instance Ord name => Ord (Ref name) where
   compare (Ref x _) (Ref y _) = compare x y
-
-anonymousRef :: name -> Ref name
-anonymousRef refName = Ref {refName, refPosition = Position 0 0}
 
 isNotSystemTypeName :: TypeName -> Bool
 isNotSystemTypeName =
@@ -307,20 +312,25 @@ isNotSystemTypeName =
         "ID"
       ]
   )
+{-# INLINE isNotSystemTypeName #-}
 
 sysFields :: [FieldName]
 sysFields = ["__typename", "__schema", "__type"]
+{-# INLINE sysFields #-}
 
 hsTypeName :: TypeName -> TypeName
 hsTypeName "String" = "Text"
 hsTypeName "Boolean" = "Bool"
+hsTypeName "Float" = "Double"
 hsTypeName name = name
+{-# INLINE hsTypeName #-}
 
 toOperationType :: TypeName -> Maybe OperationType
 toOperationType "Subscription" = Just Subscription
 toOperationType "Mutation" = Just Mutation
 toOperationType "Query" = Just Query
 toOperationType _ = Nothing
+{-# INLINE toOperationType #-}
 
 -- handle reserved Names
 isReserved :: FieldName -> Bool
@@ -356,14 +366,18 @@ convertToJSONName (FieldName hsName)
   | otherwise = FieldName hsName
   where
     name = T.init hsName
+{-# INLINE convertToJSONName #-}
 
 convertToHaskellName :: FieldName -> FieldName
 convertToHaskellName name
   | isReserved name = name <> "'"
   | otherwise = name
+{-# INLINE convertToHaskellName #-}
 
 unitTypeName :: TypeName
 unitTypeName = "Unit"
+{-# INLINE unitTypeName #-}
 
 unitFieldName :: FieldName
 unitFieldName = "_"
+{-# INLINE unitFieldName #-}

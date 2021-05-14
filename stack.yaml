@@ -1,7 +1,8 @@
 # 8.10.4
-resolver: lts-17.7
+resolver: lts-17.11
 save-hackage-creds: false
 packages:
+  - morpheus-graphql-benchmarks
   - morpheus-graphql-examples-scotty
   - morpheus-graphql-examples-servant
   - morpheus-graphql-examples-client
@@ -13,8 +14,9 @@ packages:
 
 extra-deps:
   - fraxl-0.3.0.0
+  - haxl-2.3.0.0
   - dependent-map-0.2.4.0
   - dependent-sum-0.4
   - fastsum-0.1.1.1
   - type-aligned-0.9.6
-  - haxl-2.3.0.0
+  - graphql-0.11.0.0

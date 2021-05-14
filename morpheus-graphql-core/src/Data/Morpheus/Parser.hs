@@ -14,9 +14,11 @@ import Data.Morpheus.Ext.Result
     sortErrors,
   )
 import Data.Morpheus.Ext.SemigroupM ((<:>))
+import Data.Morpheus.Parsing.Document.TypeSystem
+  ( parseTypeDefinitions,
+  )
 import qualified Data.Morpheus.Parsing.Document.TypeSystem as P
   ( parseSchema,
-    parseTypeDefinitions,
   )
 import Data.Morpheus.Parsing.Request.Parser
   ( parseRequest,
@@ -26,11 +28,8 @@ import Data.Morpheus.Types.IO
   ( GQLRequest (..),
   )
 import Data.Morpheus.Types.Internal.AST
-  ( ANY,
-    CONST,
-    Operation,
+  ( Operation,
     Schema (..),
-    TypeDefinition (..),
     VALID,
   )
 import Data.Morpheus.Types.Internal.Config
@@ -57,10 +56,6 @@ parseSchema =
                 validationMode = FULL_VALIDATION
               }
       )
-
-parseTypeDefinitions ::
-  ByteString -> Eventless [TypeDefinition ANY CONST]
-parseTypeDefinitions = P.parseTypeDefinitions
 
 parseRequestWith :: Config -> Schema VALID -> GQLRequest -> Eventless (Operation VALID)
 parseRequestWith config schema req = do

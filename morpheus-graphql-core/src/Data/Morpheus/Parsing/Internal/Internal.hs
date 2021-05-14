@@ -51,10 +51,12 @@ import Text.Megaparsec
 
 getLocation :: Parser Position
 getLocation = fmap toLocation getSourcePos
+{-# INLINEABLE getLocation #-}
 
 toLocation :: SourcePos -> Position
 toLocation SourcePos {sourceLine, sourceColumn} =
   Position {line = unPos sourceLine, column = unPos sourceColumn}
+{-# INLINEABLE toLocation #-}
 
 type MyError = Void
 

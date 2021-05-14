@@ -110,7 +110,7 @@ deriveGQLType
           implementsFunc = listE $ fmap introspectInterface (interfacesFrom typeOriginal)
           typeOptionsFunc
             | namespace = [|dropNamespaceOptions tKind tName|]
-            | otherwise = varE 'id
+            | otherwise = [|id|]
           fieldDescriptionsFunc = [|value|]
             where
               value = getDesc typeOriginal

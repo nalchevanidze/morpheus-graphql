@@ -1,10 +1,8 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: addbf3b0bbceaaf424e42de0bfff8d38712c70a3cfa9089d27b37c0fa86c2ead
 
 name:           morpheus-graphql-core
 version:        0.17.0
@@ -54,6 +52,8 @@ data-files:
     test/rendering/variable/schema.gql
     test/rendering/variable/simple/query.gql
     test/rendering/variable/simple/rendering.gql
+    test/schema/parsing/descriptions/grave-accent/schema.gql
+    test/schema/parsing/descriptions/ok/schema.gql
     test/schema/parsing/directive/ok/simple/schema.gql
     test/schema/parsing/directive/ok/sophisticated/schema.gql
     test/schema/parsing/schema-definition/fail/dupplicate-field/query-mutation-subscription/schema.gql
@@ -100,6 +100,8 @@ data-files:
     test/rendering/variable/input/variables.json
     test/rendering/variable/list/variables.json
     test/rendering/variable/simple/variables.json
+    test/schema/parsing/descriptions/grave-accent/response.json
+    test/schema/parsing/descriptions/ok/response.json
     test/schema/parsing/directive/ok/simple/response.json
     test/schema/parsing/directive/ok/sophisticated/response.json
     test/schema/parsing/schema-definition/fail/dupplicate-field/query-mutation-subscription/response.json
@@ -184,6 +186,7 @@ library
       Data.Morpheus.Parsing.Internal.Arguments
       Data.Morpheus.Parsing.Internal.Internal
       Data.Morpheus.Parsing.Internal.Pattern
+      Data.Morpheus.Parsing.Internal.SourceText
       Data.Morpheus.Parsing.Internal.Terms
       Data.Morpheus.Parsing.Internal.Value
       Data.Morpheus.Parsing.Request.Operation
@@ -209,6 +212,7 @@ library
       Data.Morpheus.Types.Internal.Validation.Internal
       Data.Morpheus.Types.Internal.Validation.SchemaValidator
       Data.Morpheus.Types.Internal.Validation.Validator
+      Data.Morpheus.Validation.Document.Interface
       Data.Morpheus.Validation.Document.Validation
       Data.Morpheus.Validation.Internal.Arguments
       Data.Morpheus.Validation.Internal.Directive

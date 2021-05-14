@@ -1,11 +1,11 @@
 {
   "data": {
     "__type": {
-      "description": "type Description:\n\n  Address",
+      "description": "\ntype Description:\n\n  Address\n",
       "fields": [
         {
           "name": "city",
-          "description": "field Description: city",
+          "description": "\n  field Description: city\n  ",
           "args": []
         },
         {
@@ -14,7 +14,7 @@
           "args": [
             {
               "name": "argInputObject",
-              "description": "argument Description: inputObject"
+              "description": "\n    argument Description: inputObject\n    "
             },
             { "name": "argMaybeString", "description": null }
           ]

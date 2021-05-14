@@ -1,11 +1,17 @@
 {
   "data": {
     "__type": {
-      "description": "type Description: TestEnum\n\nsome random enums for test",
+      "description": "\ntype Description: TestEnum\n\nsome random enums for test\n",
       "enumValues": [
-        { "name": "EnumA", "description": "enumValue Description: EnumA" },
+        {
+          "name": "EnumA",
+          "description": "\n  enumValue Description: EnumA\n  "
+        },
         { "name": "EnumB", "description": null },
-        { "name": "EnumC", "description": "enumValue Description: EnumC" }
+        {
+          "name": "EnumC",
+          "description": "\n  enumValue Description: EnumC\n  "
+        }
       ]
     }
   }

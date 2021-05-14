@@ -93,6 +93,7 @@ mkObject typeDescription typeName objectImplements typeDirectives objectFields =
     { typeContent = DataObject {objectImplements, objectFields},
       ..
     }
+{-# INLINEABLE mkObject #-}
 
 -- Scalars : https://graphql.github.io/graphql-spec/June2018/#sec-Scalars
 --
@@ -109,6 +110,7 @@ scalarTypeDefinition typeDescription =
       <$> typeDeclaration "scalar"
       <*> optionalDirectives
       <*> pure (DataScalar (ScalarDefinition pure))
+{-# INLINEABLE scalarTypeDefinition #-}
 
 -- Objects : https://graphql.github.io/graphql-spec/June2018/#sec-Objects
 --
@@ -136,14 +138,14 @@ objectTypeDefinition typeDescription =
       <*> optionalImplementsInterfaces
       <*> optionalDirectives
       <*> fieldsDefinition
-
--- build object
+{-# INLINEABLE objectTypeDefinition #-}
 
 optionalImplementsInterfaces :: Parser [TypeName]
 optionalImplementsInterfaces = implements <|> pure []
   where
     implements =
       label "ImplementsInterfaces" $ keyword "implements" *> sepByAnd parseTypeName
+{-# INLINEABLE optionalImplementsInterfaces #-}
 
 -- Interfaces: https://graphql.github.io/graphql-spec/June2018/#sec-Interfaces
 --
@@ -160,6 +162,7 @@ interfaceTypeDefinition typeDescription =
       <$> typeDeclaration "interface"
       <*> optionalDirectives
       <*> (DataInterface <$> fieldsDefinition)
+{-# INLINEABLE interfaceTypeDefinition #-}
 
 -- Unions : https://graphql.github.io/graphql-spec/June2018/#sec-Unions
 --
@@ -184,6 +187,7 @@ unionTypeDefinition typeDescription =
     unionMemberTypes =
       equal
         *> pipe (mkUnionMember <$> parseTypeName)
+{-# INLINEABLE unionTypeDefinition #-}
 
 -- Enums : https://graphql.github.io/graphql-spec/June2018/#sec-Enums
 --
@@ -206,6 +210,7 @@ enumTypeDefinition typeDescription =
       <$> typeDeclaration "enum"
       <*> optionalDirectives
       <*> (DataEnum <$> collection enumValueDefinition)
+{-# INLINEABLE enumTypeDefinition #-}
 
 -- Input Objects : https://graphql.github.io/graphql-spec/June2018/#sec-Input-Objects
 --
@@ -226,6 +231,7 @@ inputObjectTypeDefinition typeDescription =
       <$> typeDeclaration "input"
       <*> optionalDirectives
       <*> (DataInputObject <$> inputFieldsDefinition)
+{-# INLINEABLE inputObjectTypeDefinition #-}
 
 -- 3.13 DirectiveDefinition
 --
@@ -249,6 +255,7 @@ parseDirectiveDefinition directiveDefinitionDescription =
         <*> pure directiveDefinitionDescription
         <*> optionalCollection argumentsDefinition
         <*> (optional (keyword "repeatable") *> keyword "on" *> pipe parseDirectiveLocation)
+{-# INLINEABLE parseDirectiveDefinition #-}
 
 -- 3.2 Schema
 -- SchemaDefinition:
@@ -271,12 +278,14 @@ parseSchemaDefinition _schemaDescription =
              <$> optionalDirectives
              <*> setOf parseRootOperationTypeDefinition
          )
+{-# INLINEABLE parseSchemaDefinition #-}
 
 parseRootOperationTypeDefinition :: Parser RootOperationTypeDefinition
 parseRootOperationTypeDefinition =
   RootOperationTypeDefinition
     <$> (parseOperationType <* colon)
     <*> parseTypeName
+{-# INLINEABLE parseRootOperationTypeDefinition #-}
 
 parseTypeSystemUnit ::
   Parser RawTypeDefinition
@@ -298,6 +307,7 @@ parseTypeSystemUnit =
                 <|> enumTypeDefinition description
                 <|> scalarTypeDefinition description
             )
+{-# INLINEABLE parseTypeSystemUnit #-}
 
 typePartition ::
   [RawTypeDefinition] ->
@@ -352,10 +362,9 @@ typeSystemDefinition =
     >=> withSchemaDefinition . typePartition
 
 parseTypeDefinitions :: ByteString -> Eventless [TypeDefinition ANY CONST]
-parseTypeDefinitions = fmap snd3 . typeSystemDefinition
-
-snd3 :: (a, b, c) -> b
-snd3 (_, x, _) = x
+parseTypeDefinitions =
+  fmap (\d -> [td | RawTypeDefinition td <- d])
+    . processParser parseRawTypeDefinitions
 
 parseSchema :: ByteString -> Eventless (Schema CONST)
 parseSchema = typeSystemDefinition >=> buildSchema

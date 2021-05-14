@@ -21,6 +21,7 @@ where
 import Control.Monad.Trans (lift)
 -- MORPHEUS
 
+import Data.FileEmbed (makeRelativeToProject)
 import Data.Map (Map)
 import qualified Data.Map as M
   ( fromList,
@@ -76,9 +77,9 @@ type SetInt = Set Int
 
 type MapTextInt = Map Text Int
 
-$(importGQLDocumentWithNamespace "src/Server/Sophisticated/shared.gql")
+importGQLDocumentWithNamespace =<< makeRelativeToProject "src/Server/Sophisticated/shared.gql"
 
-$(importGQLDocumentWithNamespace "src/Server/Sophisticated/api.gql")
+importGQLDocumentWithNamespace =<< makeRelativeToProject "src/Server/Sophisticated/api.gql"
 
 data Animal
   = AnimalCat Cat

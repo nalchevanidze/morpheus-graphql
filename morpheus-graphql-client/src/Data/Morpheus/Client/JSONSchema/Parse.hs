@@ -43,7 +43,6 @@ import Data.Morpheus.Types.Internal.AST
   ( ANY,
     ArgumentDefinition (..),
     CONST,
-    DataTypeWrapper (..),
     FieldDefinition,
     IN,
     Message,
@@ -53,20 +52,20 @@ import Data.Morpheus.Types.Internal.AST
     SchemaDefinition (..),
     TypeContent (..),
     TypeDefinition (..),
-    TypeName,
-    TypeWrapper,
+    TypeRef (..),
+    TypeWrapper (..),
     VALID,
     ValidationErrors,
     buildSchema,
     createScalarType,
     mkEnumContent,
-    mkInputValue,
+    mkField,
+    mkMaybeType,
     mkObjectField,
     mkType,
     mkUnionContent,
     msg,
     toAny,
-    toHSWrappers,
   )
 import Relude hiding
   ( ByteString,
@@ -146,25 +145,25 @@ instance ParseJSONSchema Type [TypeDefinition ANY CONST] where
 
 instance ParseJSONSchema Field (FieldDefinition OUT CONST) where
   parse Field {fieldName, fieldArgs, fieldType} = do
-    (wrappers, typename) <- fieldTypeFromJSON fieldType
+    TypeRef typename wrappers <- fieldTypeFromJSON fieldType
     args <- traverse genArg fieldArgs >>= fromElems
     pure $ mkObjectField args fieldName wrappers typename
     where
       genArg InputValue {inputName = argName, inputType = argType} =
-        ArgumentDefinition . uncurry (mkInputValue argName) <$> fieldTypeFromJSON argType
+        ArgumentDefinition . mkField Nothing argName <$> fieldTypeFromJSON argType
 
 instance ParseJSONSchema InputValue (FieldDefinition IN CONST) where
-  parse InputValue {inputName, inputType} = uncurry (mkInputValue inputName) <$> fieldTypeFromJSON inputType
+  parse InputValue {inputName, inputType} = mkField Nothing inputName <$> fieldTypeFromJSON inputType
 
-fieldTypeFromJSON :: Type -> Eventless ([TypeWrapper], TypeName)
-fieldTypeFromJSON = fmap toHs . fieldTypeRec []
-  where
-    toHs (w, t) = (toHSWrappers w, t)
-    fieldTypeRec ::
-      [DataTypeWrapper] -> Type -> Eventless ([DataTypeWrapper], TypeName)
-    fieldTypeRec acc Type {kind = LIST, ofType = Just ofType} =
-      fieldTypeRec (ListType : acc) ofType
-    fieldTypeRec acc Type {kind = NON_NULL, ofType = Just ofType} =
-      fieldTypeRec (NonNullType : acc) ofType
-    fieldTypeRec acc Type {name = Just name} = pure (acc, name)
-    fieldTypeRec _ x = decoderError $ "Unsupported Field" <> msg (show x)
+fieldTypeFromJSON :: Type -> Eventless TypeRef
+fieldTypeFromJSON Type {kind = NON_NULL, ofType = Just ofType} = withListNonNull <$> fieldTypeFromJSON ofType
+fieldTypeFromJSON Type {kind = LIST, ofType = Just ofType} = withList <$> fieldTypeFromJSON ofType
+fieldTypeFromJSON Type {name = Just name} = pure (TypeRef name mkMaybeType)
+fieldTypeFromJSON x = decoderError $ "Unsupported Field" <> msg (show x)
+
+withList :: TypeRef -> TypeRef
+withList (TypeRef name x) = TypeRef name (TypeList x False)
+
+withListNonNull :: TypeRef -> TypeRef
+withListNonNull (TypeRef name (TypeList y _)) = TypeRef name (TypeList y True)
+withListNonNull (TypeRef name (BaseType _)) = TypeRef name (BaseType True)

@@ -16,6 +16,7 @@ module Server.API.Simple
   )
 where
 
+import Data.FileEmbed (makeRelativeToProject)
 import Data.Morpheus
   ( App,
     deriveApp,
@@ -36,7 +37,7 @@ import Data.Morpheus.Types
 import Data.Text (Text)
 import GHC.Generics (Generic)
 
-importGQLDocument "src/Server/API/simple.gql"
+makeRelativeToProject "src/Server/API/simple.gql" >>= importGQLDocument
 
 type EVENT = Event Channel Contet
 

@@ -47,7 +47,7 @@ import Data.Morpheus.Types.Internal.AST.Stage
   )
 import Data.Morpheus.Types.Internal.AST.Type
   ( TypeRef (..),
-    TypeWrapper (..),
+    mkMaybeType,
   )
 import Data.Morpheus.Types.Internal.AST.TypeCategory
   ( IN,
@@ -125,7 +125,7 @@ mkInputUnionField UnionMember {memberName, nullary} =
       fieldType =
         TypeRef
           { typeConName,
-            typeWrappers = [TypeMaybe]
+            typeWrappers = mkMaybeType
           },
       fieldDirectives = []
     }

@@ -56,21 +56,21 @@ failExp =
   appE
     (toVar 'fail)
     ( uInfixE
-        (appE (varE 'show) v')
-        (varE '(<>))
+        (appE [|show|] v')
+        [|(<>)|]
         (stringE " is Not Valid Union Constructor")
     )
 
 decodeObjectE :: (Bool -> Name) -> TypeName -> [FieldDefinition cat s] -> ExpQ
-decodeObjectE _ conName [] = appE (varE 'pure) (toCon conName)
+decodeObjectE _ conName [] = appE [|pure|] (toCon conName)
 decodeObjectE funName conName fields =
   uInfixE
     (toCon conName)
-    (varE '(<$>))
+    [|(<$>)|]
     (foldr1 withApplicative $ map (defField funName) fields)
 
 withApplicative :: ExpQ -> ExpQ -> ExpQ
-withApplicative x = uInfixE x (varE '(<*>))
+withApplicative x = uInfixE x [|(<*>)|]
 
 defField :: (Bool -> Name) -> FieldDefinition cat s -> ExpQ
 defField f field@FieldDefinition {fieldName} = uInfixE v' (varE $ f (isNullable field)) (toString fieldName)

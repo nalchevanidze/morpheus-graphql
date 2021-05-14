@@ -16,6 +16,7 @@ import qualified Case.JSON.Custom.Subscription as JSONCustomSubscription
 import Case.LowercaseTypeName.Test
   ( testLowercaseTypeName,
   )
+import qualified Case.Scalar.Test as Scalar
 import Test.Tasty
   ( defaultMain,
     testGroup,
@@ -34,6 +35,7 @@ main =
         testLowercaseTypeName,
         Enum.test,
         JSONCustomErrors.test,
+        Scalar.test,
         JSONCustomMutation.test,
         JSONCustomPartialResponse.test,
         JSONCustomQuery.test,

@@ -1,7 +1,7 @@
 {
   "errors": [
     {
-      "message": "offset=20:\nunexpected '@'\nexpecting !, ']', '_', Ignored, IgnoredTokens, digit, letter, or white space\n",
+      "message": "offset=20:\nunexpected '@'\nexpecting '!', ']', or IgnoredTokens\n",
       "locations": [{ "line": 1, "column": 21 }]
     }
   ]

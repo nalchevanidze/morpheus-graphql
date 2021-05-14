@@ -1,0 +1,93 @@
+"""
+lifespan of mortal creatures
+"""
+scalar Lifetime
+
+scalar Power
+
+enum Profession {
+  Priest
+  Farmer
+  Artist
+}
+
+"ancient city"
+enum City {
+  Athens
+  Ithaca
+  Sparta
+  Troy
+}
+
+"""
+human
+ew jso
+ewrw
+"""
+input Realm {
+  owner: String!
+  age: Int
+  realm: Realm
+  profession: Profession
+}
+
+"""
+my interface description
+"""
+interface MyInterface {
+  """
+  interface field description
+  """
+  name: String
+}
+
+"my mutation description"
+type Deity {
+  fullName: String!
+  power: Power @deprecated(reason: "test deprecation")
+}
+
+"""
+my mutation description
+some creature
+"""
+type Creature {
+  name: String!
+  realm: City!
+  immortality: Boolean! @deprecated
+}
+
+"""
+human
+
+ewrw
+"""
+type Human {
+  humanName: String!
+  lifetime: Lifetime! @deprecated(reason: "some reason")
+  profession: Profession
+}
+
+"""
+my unon description
+"""
+union Character = Creature | Deity | Human
+
+"""
+my interface description
+"""
+type MyQuery {
+  deity(name: [[[[[String!]]!]]], mythology: Realm): Deity!
+  character(characterID: ID!, age: Int): Character!
+  hero: Human!
+}
+
+type Mutation {
+  createDeity(name: [[[[[String!]]!]]], mythology: String): Deity!
+  createCharacter(realm: Realm!, id: String!): Character!
+}
+
+schema {
+  query: MyQuery
+  mutation: Mutation
+}

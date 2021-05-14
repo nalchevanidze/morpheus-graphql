@@ -15,7 +15,6 @@ module Data.Morpheus.App.RenderIntrospection
   )
 where
 
-import Data.Foldable (foldr')
 import Data.Morpheus.App.Internal.Resolving
   ( Resolver,
     ResolverContext (..),
@@ -40,7 +39,6 @@ import Data.Morpheus.Types.Internal.AST
     ArgumentDefinition (..),
     ArgumentsDefinition,
     DataEnumValue (..),
-    DataTypeWrapper (..),
     Description,
     DirectiveDefinition (..),
     DirectiveLocation,
@@ -61,6 +59,7 @@ import Data.Morpheus.Types.Internal.AST
     TypeKind (..),
     TypeName (..),
     TypeRef (..),
+    TypeWrapper (BaseType, TypeList),
     UnionMember (..),
     VALID,
     Value (..),
@@ -71,7 +70,6 @@ import Data.Morpheus.Types.Internal.AST
     mkInputUnionFields,
     msg,
     possibleInterfaceTypes,
-    toGQLWrapper,
   )
 import Data.Text (pack)
 import Relude
@@ -252,26 +250,35 @@ instance RenderIntrospection (DataEnumValue VALID) where
         <> renderDeprecated enumDirectives
 
 instance RenderIntrospection TypeRef where
-  render TypeRef {typeConName, typeWrappers} = do
-    kind <- kindOf <$> selectType typeConName
-    let currentType = mkType kind typeConName Nothing []
-    pure $ foldr' wrap currentType (toGQLWrapper typeWrappers)
+  render TypeRef {typeConName, typeWrappers} = renderWrapper typeWrappers
     where
-      wrap ::
-        ( Monad m,
-          WithSchema m
-        ) =>
-        DataTypeWrapper ->
-        ResolverValue m ->
-        ResolverValue m
-      wrap wrapper contentType =
-        mkObject
-          "__Type"
-          [ renderKind (wrapperKind wrapper),
-            ("ofType", pure contentType)
-          ]
-      wrapperKind ListType = KindList
-      wrapperKind NonNullType = KindNonNull
+      renderWrapper :: (Monad m, WithSchema m) => TypeWrapper -> m (ResolverValue m)
+      renderWrapper (TypeList nextWrapper isNonNull) =
+        pure $ withNonNull isNonNull $
+          mkObject
+            "__Type"
+            [ renderKind KindList,
+              ("ofType", renderWrapper nextWrapper)
+            ]
+      renderWrapper (BaseType isNonNull) =
+        withNonNull isNonNull <$> do
+          kind <- kindOf <$> selectType typeConName
+          pure $ mkType kind typeConName Nothing []
+
+withNonNull ::
+  ( Monad m,
+    WithSchema m
+  ) =>
+  Bool ->
+  ResolverValue m ->
+  ResolverValue m
+withNonNull True contentType =
+  mkObject
+    "__Type"
+    [ renderKind KindNonNull,
+      ("ofType", pure contentType)
+    ]
+withNonNull False contentType = contentType
 
 renderPossibleTypes ::
   (Monad m, WithSchema m) =>

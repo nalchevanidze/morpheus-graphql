@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeFamilies #-}
@@ -15,13 +16,14 @@ import Data.Morpheus.Parsing.Internal.Internal
   )
 import Data.Morpheus.Parsing.Internal.Terms
   ( brackets,
+    colon,
     equal,
-    fieldNameColon,
     ignoredTokens,
-    parseNegativeSign,
+    parseName,
     parseString,
     parseTypeName,
     setOf,
+    symbol,
     variable,
   )
 import Data.Morpheus.Types.Internal.AST
@@ -44,44 +46,56 @@ import Text.Megaparsec.Byte
   )
 import Text.Megaparsec.Byte.Lexer (scientific)
 
+-- '-'
+#define MINUS 45
+
 valueNull :: Parser (Value a)
 valueNull = string "null" $> Null
+{-# INLINE valueNull #-}
 
 booleanValue :: Parser (Value a)
-booleanValue = boolTrue <|> boolFalse
-  where
-    boolTrue = string "true" $> Scalar (Boolean True)
-    boolFalse = string "false" $> Scalar (Boolean False)
+booleanValue =
+  Scalar . Boolean
+    <$> ( string "true" $> True
+            <|> string "false" $> False
+        )
+{-# INLINE booleanValue #-}
 
 valueNumber :: Parser (Value a)
-valueNumber =
-  Scalar . decodeScientific
-    <$> (signedNumber <$> parseNegativeSign <*> scientific)
+valueNumber = Scalar . decodeScientific <$> ((*) <$> negation <*> scientific)
   where
-    signedNumber isNegative number
-      | isNegative = - number
-      | otherwise = number
+    negation = (symbol MINUS $> (-1) <* ignoredTokens) <|> pure 1
+    {-# INLINE negation #-}
+{-# INLINE valueNumber #-}
 
 enumValue :: Parser (Value a)
 enumValue = Enum <$> parseTypeName <* ignoredTokens
+{-# INLINE enumValue #-}
 
 stringValue :: Parser (Value a)
-stringValue = label "stringValue" $ Scalar . String <$> parseString
+stringValue = Scalar . String <$> parseString
+{-# INLINE stringValue #-}
 
 listValue :: Parser a -> Parser [a]
-listValue parser = label "list" $ brackets (parser `sepBy` ignoredTokens)
+listValue parser = label "List" $ brackets (parser `sepBy` ignoredTokens)
+{-# INLINE listValue #-}
 
 objectEntry :: Parser (Value a) -> Parser (ObjectEntry a)
-objectEntry parser =
-  label "ObjectEntry" $
-    ObjectEntry <$> fieldNameColon <*> parser
+objectEntry parser = ObjectEntry <$> (parseName <* colon) <*> parser
+{-# INLINE objectEntry #-}
 
 objectValue :: Parser (Value a) -> Parser (OrdMap FieldName (ObjectEntry a))
 objectValue = label "ObjectValue" . setOf . objectEntry
+{-# INLINE objectValue #-}
 
 parsePrimitives :: Parser (Value a)
 parsePrimitives =
-  valueNull <|> booleanValue <|> valueNumber <|> enumValue <|> stringValue
+  valueNull
+    <|> booleanValue
+    <|> valueNumber
+    <|> enumValue
+    <|> stringValue
+{-# INLINE parsePrimitives #-}
 
 parseDefaultValue :: Parser (Value s)
 parseDefaultValue = equal *> parseV

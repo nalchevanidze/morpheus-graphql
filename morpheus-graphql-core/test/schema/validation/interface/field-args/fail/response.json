@@ -5,11 +5,15 @@
       "locations": []
     },
     {
-      "message": "Interface field argument Supernatural.power(id:) expects type\"ID!\" but Deity.power(id:) is type \"String!\".",
+      "message": "Interface field argument Supernatural.power(id:) expects type \"ID!\" but Deity.power(id:) is type \"String!\".",
       "locations": []
     },
     {
-      "message": "Interface field argument Supernatural.power(id:) expects type\"ID!\" but Hero.power(id:) is type \"ID\".",
+      "message": "Interface field Supernatural.power expects type \"[String!]!\" but Hero.power is type \"String!\".",
+      "locations": []
+    },
+    {
+      "message": "Interface field argument Supernatural.power(id:) expects type \"ID!\" but Hero.power(id:) is type \"ID\".",
       "locations": []
     }
   ]

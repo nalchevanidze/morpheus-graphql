@@ -71,6 +71,7 @@ import Data.Morpheus.Types.Internal.AST
     TypeName (..),
     TypeWrapper (..),
     Value,
+    mkBaseType,
     toNullable,
   )
 import Data.Morpheus.Utils.Kinded (CategoryValue (..))
@@ -92,7 +93,7 @@ import Relude hiding (Undefined, intercalate)
 
 data TypeData = TypeData
   { gqlTypeName :: TypeName,
-    gqlWrappers :: [TypeWrapper],
+    gqlWrappers :: TypeWrapper,
     gqlFingerprint :: TypeFingerprint
   }
 
@@ -133,7 +134,7 @@ deriveTypeData :: Typeable a => f a -> (Bool -> String -> String) -> TypeCategor
 deriveTypeData proxy typeNameModifier cat =
   TypeData
     { gqlTypeName = TypeName . pack $ typeNameModifier (cat == IN) originalTypeName,
-      gqlWrappers = [],
+      gqlWrappers = mkBaseType,
       gqlFingerprint = getFingerprint cat proxy
     }
   where
@@ -147,13 +148,13 @@ mkTypeData name _ =
   TypeData
     { gqlTypeName = name,
       gqlFingerprint = InternalFingerprint name,
-      gqlWrappers = []
+      gqlWrappers = mkBaseType
     }
 
-list :: [TypeWrapper] -> [TypeWrapper]
-list = (TypeList :)
+list :: TypeWrapper -> TypeWrapper
+list = flip TypeList True
 
-wrapper :: ([TypeWrapper] -> [TypeWrapper]) -> TypeData -> TypeData
+wrapper :: (TypeWrapper -> TypeWrapper) -> TypeData -> TypeData
 wrapper f TypeData {..} = TypeData {gqlWrappers = f gqlWrappers, ..}
 
 resolverCon :: TyCon

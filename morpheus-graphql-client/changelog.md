@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+### Minor Changes
+
+- Add defineBy\*File' variants that take a `Q FilePath` [#584](https://github.com/morpheusgraphql/morpheus-graphql/pull/584)
+
+- fixed invalid scalar type generation and added tests to ensure their validity for each upcoming version [#583](https://github.com/morpheusgraphql/morpheus-graphql/issues/583)
+
 ## 0.17.0 - 25.02.2021
 
 ### Breaking changes

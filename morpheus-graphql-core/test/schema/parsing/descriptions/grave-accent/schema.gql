@@ -1,0 +1,7 @@
+"""
+A condition to be used against `ActivityLog` object types. All fields are tested
+for equality and combined with a logical ‘and.’
+"""
+type Query {
+  field: Int
+}

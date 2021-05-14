@@ -20,6 +20,7 @@ dependencies:
   - warp
   - servant-server
   - http-media
+  - file-embed
 
 executables:
   servant-server:

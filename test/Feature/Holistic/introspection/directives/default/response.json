@@ -4,7 +4,7 @@
       "directives": [
         {
           "name": "skip",
-          "description": "Directs the executor to skip this field or fragment when the `if` argument is true.",
+          "description": "\nDirects the executor to skip this field or fragment when the `if` argument is true.\n",
           "locations": ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
           "args": [
             {
@@ -24,7 +24,7 @@
         },
         {
           "name": "include",
-          "description": "Directs the executor to include this field or fragment only when the `if` argument is true.",
+          "description": "\nDirects the executor to include this field or fragment only when the `if` argument is true.\n",
           "locations": ["FIELD", "FRAGMENT_SPREAD", "INLINE_FRAGMENT"],
           "args": [
             {
@@ -44,7 +44,7 @@
         },
         {
           "name": "deprecated",
-          "description": "Marks an element of a GraphQL schema as no longer supported.",
+          "description": "\nMarks an element of a GraphQL schema as no longer supported.\n",
           "locations": ["FIELD_DEFINITION", "ENUM_VALUE"],
           "args": [
             {

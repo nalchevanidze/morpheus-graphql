@@ -211,7 +211,7 @@ instance RenderGQL (Value a) where
   renderGQL (Object xs) = "{" <> entries <> "}"
     where
       entries
-        | null (elems xs) = ""
+        | null xs = ""
         | otherwise = space <> renderInputSeq (elems xs) <> space
   renderGQL (List list) = "[" <> renderInputSeq list <> "]"
 

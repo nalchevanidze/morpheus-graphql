@@ -33,6 +33,7 @@ dependencies:
   - fraxl
   - haxl
   - hashable
+  - file-embed
 
 data-files:
   - assets/**/*.json

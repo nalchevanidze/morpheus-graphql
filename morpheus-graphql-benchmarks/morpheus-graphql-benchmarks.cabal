@@ -1,0 +1,57 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.33.0.
+--
+-- see: https://github.com/sol/hpack
+--
+-- hash: e3cf28c96239664348f24634d4cf287edb5eec36d65b13e5bcd46a30c700450f
+
+name:           morpheus-graphql-benchmarks
+version:        0.17.0
+synopsis:       Morpheus GraphQL Benchmarks
+description:    Build GraphQL APIs with your favorite functional language!
+category:       web, graphql
+homepage:       https://morpheusgraphql.com
+bug-reports:    https://github.com/nalchevanidze/morpheus-graphql/issues
+author:         Daviti Nalchevanidze
+maintainer:     d.nalchevanidze@gmail.com
+copyright:      (c) 2019 Daviti Nalchevanidze
+license:        MIT
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    changelog.md
+    README.md
+data-files:
+    samples/descriptions.gql
+    samples/github.gql
+    samples/huge-string.gql
+    samples/mythology.gql
+    samples/starwars.gql
+    samples/wrappers.gql
+
+source-repository head
+  type: git
+  location: https://github.com/nalchevanidze/morpheus-graphql
+
+benchmark morpheus-bench
+  type: exitcode-stdio-1.0
+  main-is: Main.hs
+  other-modules:
+      Parser.GraphQL
+      Parser.Morpheus
+      Paths_morpheus_graphql_benchmarks
+  hs-source-dirs:
+      src
+  ghc-options: -eventlog -threaded -rtsopts -with-rtsopts=-N6 -O2
+  build-depends:
+      base >=4.7 && <5
+    , bytestring >=0.10.4 && <0.11
+    , criterion
+    , graphql >=0.11
+    , megaparsec >=7.0.0 && <10.0.0
+    , morpheus-graphql-core
+    , relude >=0.3.0
+    , text >=1.2.3.0 && <1.3
+    , unordered-containers >=0.2.8.0 && <0.3
+  default-language: Haskell2010

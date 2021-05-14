@@ -1,8 +1,8 @@
 {
   "errors": [
     {
-      "message": "offset=73:\nunexpected newline\nexpecting '\"' or EscapedChar\n",
-      "locations": [{ "line": 4, "column": 26 }]
+      "message": "offset=74:\nunexpected newline\n",
+      "locations": [{ "line": 5, "column": 1 }]
     }
   ]
 }

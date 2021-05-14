@@ -15,6 +15,7 @@ module Client.DefineByIntrospection
 where
 
 import Data.ByteString.Lazy.Char8 (ByteString)
+import Data.FileEmbed (makeRelativeToProject)
 import Data.Morpheus.Client
   ( DecodeScalar (..),
     EncodeScalar (..),
@@ -22,7 +23,7 @@ import Data.Morpheus.Client
     FetchError,
     FetchResult,
     ScalarValue (..),
-    defineByIntrospectionFile,
+    defineByIntrospectionFile',
     gql,
   )
 import Data.Semigroup ((<>))
@@ -54,8 +55,8 @@ instance EncodeScalar Euro where
 instance DecodeScalar Euro where
   decodeScalar _ = pure (Euro 1 0)
 
-defineByIntrospectionFile
-  "assets/introspection.json"
+defineByIntrospectionFile'
+  (makeRelativeToProject "assets/introspection.json")
   [gql|
 
     # Query Hero with Compile time Validation

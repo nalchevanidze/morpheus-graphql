@@ -8,7 +8,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TupleSections #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
@@ -16,16 +15,23 @@ module Data.Morpheus.Types.Internal.Validation.SchemaValidator
   ( SchemaValidator,
     TypeSystemContext (..),
     constraintInterface,
-    inField,
-    inType,
-    inArgument,
-    inInterface,
-    Field (..),
-    Interface (..),
     renderField,
+    withLocalContext,
+    runSchemaValidator,
+    inInterface,
+    inType,
+    inField,
+    inArgument,
+    ON_INTERFACE,
+    ON_TYPE,
+    TypeEntity (..),
+    Field (..),
+    InterfaceName (..),
+    PLACE,
   )
 where
 
+import Data.Morpheus.Internal.Ext (Eventless)
 import Data.Morpheus.Internal.Utils
   ( Failure (..),
   )
@@ -39,8 +45,13 @@ import Data.Morpheus.Types.Internal.AST
     TypeDefinition (..),
     TypeName,
     ValidationError,
+    mkBaseType,
     msgValidation,
   )
+import Data.Morpheus.Types.Internal.AST.Type (TypeKind (KindObject))
+import Data.Morpheus.Types.Internal.AST.TypeSystem (Schema)
+import Data.Morpheus.Types.Internal.Config (Config)
+import Data.Morpheus.Types.Internal.Validation (Scope (..), ScopeKind (TYPE), runValidator)
 import Data.Morpheus.Types.Internal.Validation.Validator
   ( Validator (..),
     renderField,
@@ -48,43 +59,65 @@ import Data.Morpheus.Types.Internal.Validation.Validator
   )
 import Relude hiding (local)
 
-newtype TypeSystemContext c = TypeSystemContext
-  {local :: c}
-  deriving (Show)
+inInterface ::
+  TypeName ->
+  SchemaValidator (TypeEntity 'ON_INTERFACE) v ->
+  SchemaValidator (TypeEntity 'ON_TYPE) v
+inInterface name = withLocalContext (\t -> t {interfaceName = OnInterface name})
 
 inType ::
   TypeName ->
-  SchemaValidator TypeName v ->
+  SchemaValidator (TypeEntity 'ON_TYPE) v ->
   SchemaValidator () v
-inType name = withLocalContext (const name)
-
-inInterface ::
-  TypeName ->
-  SchemaValidator Interface v ->
-  SchemaValidator TypeName v
-inInterface interfaceName = withLocalContext (Interface interfaceName)
+inType name = withLocalContext (const (TypeEntity OnType name))
 
 inField ::
   FieldName ->
-  SchemaValidator (t, FieldName) v ->
-  SchemaValidator t v
-inField fname = withLocalContext (,fname)
+  SchemaValidator (Field p) v ->
+  SchemaValidator (TypeEntity p) v
+inField fname = withLocalContext (Field fname Nothing)
 
 inArgument ::
   FieldName ->
-  SchemaValidator (t, Field) v ->
-  SchemaValidator (t, FieldName) v
-inArgument aname = withLocalContext (\(t1, f1) -> (t1, Field f1 aname))
+  SchemaValidator (Field p) v ->
+  SchemaValidator (Field p) v
+inArgument name = withLocalContext (\field -> field {fieldArgument = Just name})
 
-data Interface = Interface
-  { interfaceName :: TypeName,
+data PLACE = ON_INTERFACE | ON_TYPE
+
+type ON_INTERFACE = 'ON_INTERFACE
+
+type ON_TYPE = 'ON_TYPE
+
+data InterfaceName (p :: PLACE) where
+  OnInterface :: TypeName -> InterfaceName 'ON_INTERFACE
+  OnType :: InterfaceName 'ON_TYPE
+
+data TypeEntity (p :: PLACE) = TypeEntity
+  { interfaceName :: InterfaceName p,
     typeName :: TypeName
   }
 
-data Field = Field
+data Field p = Field
   { fieldName :: FieldName,
-    fieldArgument :: FieldName
+    fieldArgument :: Maybe FieldName,
+    fieldOf :: TypeEntity p
   }
+
+initialScope :: Scope
+initialScope =
+  Scope
+    { position = Nothing,
+      currentTypeName = "Root",
+      currentTypeKind = KindObject Nothing,
+      currentTypeWrappers = mkBaseType,
+      kind = TYPE,
+      fieldname = "Root"
+    }
+
+newtype TypeSystemContext c = TypeSystemContext
+  {local :: c}
+  deriving (Show)
 
 withLocalContext :: (a -> b) -> SchemaValidator b v -> SchemaValidator a v
 withLocalContext = withContext . updateLocal
@@ -93,6 +126,17 @@ updateLocal :: (a -> b) -> TypeSystemContext a -> TypeSystemContext b
 updateLocal f ctx = ctx {local = f (local ctx)}
 
 type SchemaValidator c = Validator CONST (TypeSystemContext c)
+
+runSchemaValidator :: Validator s (TypeSystemContext ()) a -> Config -> Schema s -> Eventless a
+runSchemaValidator value config sysSchema =
+  runValidator
+    value
+    config
+    sysSchema
+    initialScope
+    TypeSystemContext
+      { local = ()
+      }
 
 constraintInterface ::
   TypeDefinition ANY CONST ->

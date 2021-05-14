@@ -162,7 +162,7 @@ data Scope = Scope
   { position :: Maybe Position,
     currentTypeName :: TypeName,
     currentTypeKind :: TypeKind,
-    currentTypeWrappers :: [TypeWrapper],
+    currentTypeWrappers :: TypeWrapper,
     fieldname :: FieldName,
     kind :: ScopeKind
   }
@@ -311,7 +311,7 @@ withScope t@TypeDefinition {typeName} (Ref selName pos) =
 withScopeType ::
   ( MonadContext m s c
   ) =>
-  (TypeDefinition cat s, [TypeWrapper]) ->
+  (TypeDefinition cat s, TypeWrapper) ->
   m c a ->
   m c a
 withScopeType (t@TypeDefinition {typeName}, wrappers) = setScope update

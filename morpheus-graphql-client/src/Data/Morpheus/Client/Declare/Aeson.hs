@@ -74,7 +74,6 @@ import Language.Haskell.TH
     cxt,
     instanceD,
     tupP,
-    varE,
   )
 import Relude hiding (toString)
 
@@ -93,7 +92,7 @@ deriveScalarJSON = [deriveScalarFromJSON, deriveScalarToJSON]
 
 deriveScalarFromJSON :: ClientTypeDefinition -> DecQ
 deriveScalarFromJSON ClientTypeDefinition {clientTypeName} =
-  defineFromJSON clientTypeName (varE 'scalarFromJSON)
+  defineFromJSON clientTypeName [|scalarFromJSON|]
 
 deriveScalarToJSON :: ClientTypeDefinition -> DecQ
 deriveScalarToJSON
@@ -102,7 +101,7 @@ deriveScalarToJSON
     } = instanceD (cxt []) typeDef body
     where
       typeDef = applyCons ''ToJSON [typename]
-      body = [funDSimple 'toJSON [] (varE 'scalarToJSON)]
+      body = [funDSimple 'toJSON [] [|scalarToJSON|]]
 
 -- FromJSON
 deriveFromJSON :: ClientTypeDefinition -> DecQ
@@ -156,7 +155,7 @@ aesonUnionObject
     { clientCons,
       clientTypeName = TypeNameTH {namespace, typename}
     } =
-    appE (varE 'takeValueType) $
+    appE [|takeValueType|] $
       matchWith elseCondition f clientCons
     where
       elseCondition =
@@ -193,7 +192,7 @@ aesonFromJSONEnumBody TypeNameTH {typename} = matchWith (Just (v', failExp)) f
     f :: ClientConsD cat -> (PatQ, ExpQ)
     f ConsD {cName} =
       ( toString cName,
-        appE (varE 'pure) $ toCon $ nameSpaceType [toFieldName typename] cName
+        appE [|pure|] $ toCon $ nameSpaceType [toFieldName typename] cName
       )
 
 aesonToJSONEnumBody :: TypeNameTH -> [ClientConsD cat] -> ExpQ

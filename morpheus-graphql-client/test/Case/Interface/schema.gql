@@ -3,7 +3,7 @@ interface Character {
 }
 
 interface Supernatural {
-  power: [String!]!
+  power: String!
 }
 
 type Hero implements Character {

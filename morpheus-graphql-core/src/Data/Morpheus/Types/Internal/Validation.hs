@@ -54,6 +54,7 @@ module Data.Morpheus.Types.Internal.Validation
     selectType,
     FragmentValidator,
     askInterfaceTypes,
+    validateOptional,
   )
 where
 
@@ -136,6 +137,9 @@ import Relude hiding
   ( Constraint,
     asks,
   )
+
+validateOptional :: Applicative f => (a -> f b) -> Maybe a -> f (Maybe b)
+validateOptional = traverse
 
 getUnused :: (KeyOf k b, Selectable k a c) => c -> [b] -> [b]
 getUnused uses = filter (not . (`member` uses) . keyOf)

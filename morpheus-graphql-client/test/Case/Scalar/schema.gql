@@ -1,0 +1,6 @@
+type Query {
+  booleanResolver(booleanValue: Boolean!): Boolean!
+  intResolver(intValue: Int!): Int!
+  floatResolver(booleanValue: Float!): Float!
+  stringResolver(stringValue: String!): String!
+}
