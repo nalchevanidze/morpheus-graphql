@@ -21,7 +21,6 @@ import Data.Morpheus.Client
     EncodeScalar (..),
     Fetch (..),
     FetchError,
-    FetchResult,
     ScalarValue (..),
     defineByIntrospectionFile',
     gql,
@@ -93,7 +92,7 @@ usersApi req = do
       <> " \"user\":{ \"email\":\"some email\" }"
       <> "}}"
 
-fetchUsers :: IO (Either FetchError (FetchResult GetUser))
+fetchUsers :: IO (Either (FetchError GetUser) GetUser)
 fetchUsers = fetch usersApi userArgs
   where
     userArgs :: Args GetUser

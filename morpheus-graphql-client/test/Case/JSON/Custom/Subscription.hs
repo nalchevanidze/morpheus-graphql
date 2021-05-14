@@ -19,7 +19,6 @@ import Data.ByteString.Lazy.Char8
 import Data.Morpheus.Client
   ( Fetch (..),
     FetchError,
-    FetchResult (..),
     gql,
   )
 import Data.Text (Text)
@@ -54,7 +53,7 @@ defineClientWithJSON
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "JSON/Custom/Subscription"
 
-client :: IO (Either FetchError (FetchResult TestSubscription))
+client :: IO (Either (FetchError TestSubscription) TestSubscription)
 client = fetch resolver ()
 
 test :: TestTree
@@ -63,13 +62,10 @@ test = testCase "test Subscription" $ do
   assertEqual
     "test custom Subscription"
     ( Right
-        ( FetchResult
-          ( TestSubscription
-              { subscriptionTypeName =
-                  Just "TestSubscription"
-              }
-          )
-          []
+        ( TestSubscription
+            { subscriptionTypeName =
+                Just "TestSubscription"
+            }
         )
     )
     value

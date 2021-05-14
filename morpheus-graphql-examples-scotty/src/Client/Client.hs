@@ -19,7 +19,6 @@ import Data.FileEmbed (makeRelativeToProject)
 import Data.Morpheus.Client
   ( Fetch (..),
     FetchError,
-    FetchResult,
     defineByDocumentFile,
     defineByDocumentFile',
     gql,
@@ -78,7 +77,7 @@ defineByDocumentFile'
       }
   |]
 
-fetchUser :: (ByteString -> IO ByteString) -> IO (Either FetchError (FetchResult GetUser))
+fetchUser :: (ByteString -> IO ByteString) -> IO (Either (FetchError GetUser) GetUser)
 fetchUser = flip fetch args
   where
     args :: Args GetUser

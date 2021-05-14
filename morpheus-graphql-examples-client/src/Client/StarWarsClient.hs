@@ -16,7 +16,6 @@ import Data.FileEmbed (makeRelativeToProject)
 import Data.Morpheus.Client
   ( Fetch (..),
     FetchError,
-    FetchResult,
     defineByDocumentFile,
     defineByDocumentFile',
     gql,
@@ -58,5 +57,5 @@ resolver b = runReq defaultHttpConfig $ do
       lbsResponse
       headers
 
-fetchFilms :: IO (Either FetchError (FetchResult StarWarsFilms))
+fetchFilms :: IO (Either (FetchError StarWarsFilms) StarWarsFilms)
 fetchFilms = fetch resolver ()

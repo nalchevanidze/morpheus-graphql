@@ -17,7 +17,6 @@ import Data.ByteString.Lazy.Char8
 import Data.Morpheus.Client
   ( Fetch (..),
     FetchError(..),
-    FetchResult(..),
     gql,
   )
 import Data.Text (Text)
@@ -77,7 +76,7 @@ testFloat = 21233.1234145
 testText :: Text
 testText = "Athens"
 
-client :: IO (Either FetchError (FetchResult MyQuery))
+client :: IO (Either (FetchError MyQuery) MyQuery)
 client =
   fetch
     resolver
@@ -94,7 +93,6 @@ test = testCase "test Scalar" $ do
   assertEqual
     "test Scalar"
     ( Right
-      ( FetchResult
         ( MyQuery
             { booleanResolver = testBoolean,
               intResolver = testInt,
@@ -102,7 +100,5 @@ test = testCase "test Scalar" $ do
               stringResolver = testText
             }
         )
-        []
-      )
     )
     value

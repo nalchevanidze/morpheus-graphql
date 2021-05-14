@@ -21,7 +21,6 @@ import Data.Morpheus.Client
     EncodeScalar (..),
     Fetch (..),
     FetchError,
-    FetchResult,
     ID (..),
     ScalarValue (..),
     defineByDocumentFile',
@@ -88,7 +87,7 @@ mythologyApi req = do
   return
     "{\"data\":{\"deity\":{ \"fullName\": \"name\" }, \"character\":{ \"__typename\":\"Human\", \"lifetime\": \"Lifetime\", \"profession\": \"Artist\" } ,  \"char2\":{ \"__typename\":\"Human\", \"lTime\": \"time\", \"prof\": \"Artist\" }  }}"
 
-fetchHero :: IO (Either FetchError (FetchResult GetHero))
+fetchHero :: IO (Either (FetchError GetHero) GetHero)
 fetchHero =
   fetch
     mythologyApi

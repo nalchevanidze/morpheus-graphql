@@ -20,7 +20,6 @@ import Data.Morpheus.Client
   ( EncodeScalar (..),
     Fetch (..),
     FetchError,
-    FetchResult (..),
     ScalarValue (..),
     gql,
   )
@@ -66,7 +65,7 @@ defineClientWithJSON
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "JSON/Custom/Query"
 
-client :: IO (Either FetchError (FetchResult TestQuery))
+client :: IO (Either (FetchError TestQuery) TestQuery)
 client = fetch resolver ()
 
 test :: TestTree
@@ -75,12 +74,9 @@ test = testCase "test Query" $ do
   assertEqual
     "test custom Query"
     ( Right
-        ( FetchResult
-          ( TestQuery
-              { queryTypeName = Just "TestQuery"
-              }
-          )
-          []
+        ( TestQuery
+            { queryTypeName = Just "TestQuery"
+            }
         )
     )
     value

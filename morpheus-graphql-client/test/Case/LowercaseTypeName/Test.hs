@@ -22,7 +22,6 @@ import Data.Morpheus.Client
     EncodeScalar (..),
     Fetch (..),
     FetchError(..),
-    FetchResult(..),
     ScalarValue (..),
     gql,
   )
@@ -73,7 +72,7 @@ defineClientWith
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "LowercaseTypeName"
 
-client :: IO (Either FetchError (FetchResult MyQuery))
+client :: IO (Either (FetchError MyQuery) MyQuery)
 client = fetch resolver ()
 
 testLowercaseTypeName :: TestTree
@@ -82,7 +81,6 @@ testLowercaseTypeName = testCase "test lowercase type names" $ do
   assertEqual
     "test interface"
     ( Right
-      ( FetchResult
         ( MyQuery
             { user =
                 UserUser
@@ -90,7 +88,5 @@ testLowercaseTypeName = testCase "test lowercase type names" $ do
                   }
             }
         )
-        []
-      )
     )
     value

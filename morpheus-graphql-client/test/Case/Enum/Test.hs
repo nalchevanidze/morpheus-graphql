@@ -17,7 +17,6 @@ import Data.ByteString.Lazy.Char8
 import Data.Morpheus.Client
   ( Fetch (..),
     FetchError,
-    FetchResult (..),
     gql,
   )
 import Spec.Utils
@@ -50,7 +49,7 @@ defineClientWith
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "Enum"
 
-client :: IO (Either FetchError (FetchResult MyQuery))
+client :: IO (Either (FetchError MyQuery) MyQuery)
 client = fetch resolver MyQueryArgs {inputCity = CityAthens}
 
 test :: TestTree
@@ -59,19 +58,16 @@ test = testCase "test Enum" $ do
   assertEqual
     "test Enum"
     ( Right
-        ( FetchResult
-          ( MyQuery
-              { city = CityAthens,
-                cities =
-                  [ CityAthens,
-                    CitySparta,
-                    CityCorinth,
-                    CityDelphi,
-                    CityArgos
-                  ]
-              }
-          )
-          []
+        ( MyQuery
+            { city = CityAthens,
+              cities =
+                [ CityAthens,
+                  CitySparta,
+                  CityCorinth,
+                  CityDelphi,
+                  CityArgos
+                ]
+            }
         )
     )
     value

@@ -19,7 +19,6 @@ import Data.ByteString.Lazy.Char8
 import Data.Morpheus.Client
   ( Fetch (..),
     FetchError,
-    FetchResult (..),
     gql,
   )
 import Data.Text (Text)
@@ -78,7 +77,7 @@ defineClientWith
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "Interface"
 
-client :: IO (Either FetchError (FetchResult MyQuery))
+client :: IO (Either (FetchError MyQuery) MyQuery)
 client = fetch resolver ()
 
 testInterface :: TestTree
@@ -87,60 +86,57 @@ testInterface = testCase "test interfaces" $ do
   assertEqual
     "test interface"
     ( Right
-        ( FetchResult
-            ( MyQuery
-              { character =
-                  [ CharacterDeity
-                      { name = "Deity Name",
-                        power = "Deity Power",
-                        __typename = "Deity"
-                      },
-                    CharacterCharacter
-                      { name = "Character Name",
-                        __typename = "Character"
-                      },
-                    CharacterHero
-                      { name = "Hero Name",
-                        hobby = "Deity Power",
-                        __typename = "Hero"
-                      }
-                  ],
-                character2 =
-                  [ Character2Character
-                      { name1 = "test name",
-                        name = "test name"
-                      }
-                  ],
-                character3 =
-                  [ Character3Hero
-                      { hobby = "Hero Hobby",
-                        name2 = "Hero name2",
-                        __typename = "Hero"
-                      },
-                    Character3Deity
-                      { name2 = "Hero name2",
-                        __typename = "Deity"
-                      },
-                    Character3Character
-                      { name2 = "Character name2",
-                        __typename = "Character"
-                      }
-                  ],
-                character4 =
-                  [ Character4Character
-                      { __typename = "Character"
-                      },
-                    Character4Hero
-                      { hobby = "Hero Hobby",
-                        __typename = "Hero"
-                      },
-                    Character4Character
-                      { __typename = "Deity"
-                      }
-                  ]
-              }
-          )
-          []
+        ( MyQuery
+            { character =
+                [ CharacterDeity
+                    { name = "Deity Name",
+                      power = "Deity Power",
+                      __typename = "Deity"
+                    },
+                  CharacterCharacter
+                    { name = "Character Name",
+                      __typename = "Character"
+                    },
+                  CharacterHero
+                    { name = "Hero Name",
+                      hobby = "Deity Power",
+                      __typename = "Hero"
+                    }
+                ],
+              character2 =
+                [ Character2Character
+                    { name1 = "test name",
+                      name = "test name"
+                    }
+                ],
+              character3 =
+                [ Character3Hero
+                    { hobby = "Hero Hobby",
+                      name2 = "Hero name2",
+                      __typename = "Hero"
+                    },
+                  Character3Deity
+                    { name2 = "Hero name2",
+                      __typename = "Deity"
+                    },
+                  Character3Character
+                    { name2 = "Character name2",
+                      __typename = "Character"
+                    }
+                ],
+              character4 =
+                [ Character4Character
+                    { __typename = "Character"
+                    },
+                  Character4Hero
+                    { hobby = "Hero Hobby",
+                      __typename = "Hero"
+                    },
+                  Character4Character
+                    { __typename = "Deity"
+                    }
+                ]
+            }
         )
     )
     value
