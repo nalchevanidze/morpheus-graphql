@@ -18,6 +18,7 @@ import Data.ByteString.Lazy.Char8
   )
 import Data.Morpheus.Client
   ( Fetch (..),
+    FetchError,
     gql,
   )
 import Data.Text (Text)
@@ -76,7 +77,7 @@ defineClientWith
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "Interface"
 
-client :: IO (Either String MyQuery)
+client :: IO (Either (FetchError MyQuery) MyQuery)
 client = fetch resolver ()
 
 testInterface :: TestTree

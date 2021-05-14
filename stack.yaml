@@ -1,5 +1,5 @@
-# 8.10.1
-resolver: nightly-2021-03-29
+# 8.10.4
+resolver: lts-17.11
 save-hackage-creds: false
 packages:
   - morpheus-graphql-benchmarks

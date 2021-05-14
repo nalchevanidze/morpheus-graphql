@@ -8,7 +8,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Case.JSON.Custom.Mutation
+module Case.JSON.Custom.PartialResponse
   ( test,
   )
 where
@@ -17,8 +17,10 @@ import Data.ByteString.Lazy.Char8
   ( ByteString,
   )
 import Data.Morpheus.Client
-  ( Fetch (..),
-    FetchError,
+  ( EncodeScalar (..),
+    Fetch (..),
+    FetchError (..),
+    ScalarValue (..),
     gql,
   )
 import Data.Text (Text)
@@ -34,37 +36,43 @@ import Test.Tasty.HUnit
     testCase,
   )
 import Prelude
-  ( ($),
-    Either (..),
+  ( Either (..),
+    Eq (..),
     IO,
-    Maybe (..),
+    Show,
     String,
+    ($),
   )
+
+newtype GitTimestamp = GitTimestamp
+  { unGitTimestamp :: Text
+  }
+  deriving (Eq, Show)
+
+instance EncodeScalar GitTimestamp where
+  encodeScalar (GitTimestamp x) = String x
 
 defineClientWithJSON
   "JSON/Custom"
   [gql|
-    mutation TestMutation
+    query TestQuery
       {
-        mutationTypeName
+        queryTypeName
       }
   |]
 
 resolver :: ByteString -> IO ByteString
-resolver = mockApi "JSON/Custom/Mutation"
+resolver = mockApi "JSON/Custom/PartialResponse"
 
-client :: IO (Either (FetchError TestMutation) TestMutation)
+client :: IO (Either (FetchError TestQuery) TestQuery)
 client = fetch resolver ()
 
 test :: TestTree
-test = testCase "test Mutation" $ do
+test = testCase "test PartialResponse" $ do
   value <- client
   assertEqual
-    "test custom Mutation"
-    ( Right
-        ( TestMutation
-            { mutationTypeName = Just "TestMutation"
-            }
-        )
+    "test custom PartialResponse"
+    ( Left
+        (FetchErrorParseFailure "Error in $.data.queryTypeName: parsing Text failed, expected String, but encountered Number")
     )
     value

@@ -29,6 +29,9 @@ import Data.Morpheus.Internal.TH
     toCon,
     typeInstanceDec,
   )
+import Data.Morpheus.Client.Internal.Types
+  ( FetchError(..)
+  )
 import Data.Morpheus.Types.IO
   ( GQLRequest (..),
   )
@@ -55,14 +58,15 @@ class Fetch a where
     FieldName ->
     (ByteString -> m ByteString) ->
     Args a ->
-    m (Either String a)
-  __fetch strQuery opName trans vars = (eitherDecode >=> processResponse) <$> trans (encode gqlReq)
+    m (Either (FetchError a) a)
+  __fetch strQuery opName trans vars = ((first FetchErrorParseFailure . eitherDecode) >=> processResponse) <$> trans (encode gqlReq)
     where
       gqlReq = GQLRequest {operationName = Just opName, query = pack strQuery, variables = fixVars (toJSON vars)}
       -------------------------------------------------------------
-      processResponse JSONResponse {responseData = Just x} = Right x
-      processResponse invalidResponse = Left (show invalidResponse)
-  fetch :: (Monad m, FromJSON a) => (ByteString -> m ByteString) -> Args a -> m (Either String a)
+      processResponse JSONResponse {responseData = Just x, responseErrors = []} = Right x
+      processResponse JSONResponse {responseData = Nothing, responseErrors = []} = Left FetchErrorNoResult
+      processResponse JSONResponse {responseData = result, responseErrors = (x:xs)} = Left $ FetchErrorProducedErrors (x :| xs) result
+  fetch :: (Monad m, FromJSON a) => (ByteString -> m ByteString) -> Args a -> m (Either (FetchError a) a)
 
 deriveFetch :: Type -> TypeName -> String -> Q [Dec]
 deriveFetch resultType typeName queryString =

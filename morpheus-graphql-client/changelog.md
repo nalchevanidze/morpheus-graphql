@@ -18,6 +18,7 @@
 
 - more likely to rebuild when a file loaded by `defineByDocumentFile` or
   `defineByIntrospectionFile` is changed
+- response errors should be returned (in a structured format) [#577](https://github.com/morpheusgraphql/morpheus-graphql/issues/577) - Thanks @AlistairB
 
 ## 0.16.0 - 05.11.2020
 

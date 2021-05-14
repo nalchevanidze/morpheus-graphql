@@ -8,7 +8,7 @@
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Case.JSON.Custom.Query
+module Case.JSON.Custom.Errors
   ( test,
   )
 where
@@ -16,12 +16,19 @@ where
 import Data.ByteString.Lazy.Char8
   ( ByteString,
   )
+import Data.Morpheus.Types.Error
+  ( GQLError (..),
+    Position (..)
+  )
 import Data.Morpheus.Client
   ( EncodeScalar (..),
     Fetch (..),
-    FetchError,
+    FetchError (..),
     ScalarValue (..),
     gql,
+  )
+import Data.List.NonEmpty
+  ( NonEmpty(..),
   )
 import Data.Text (Text)
 import Spec.Utils
@@ -36,13 +43,12 @@ import Test.Tasty.HUnit
     testCase,
   )
 import Prelude
-  ( ($),
-    Either (..),
+  ( Either (..),
     Eq (..),
     IO,
     Maybe (..),
     Show,
-    String,
+    ($),
   )
 
 newtype GitTimestamp = GitTimestamp
@@ -63,20 +69,20 @@ defineClientWithJSON
   |]
 
 resolver :: ByteString -> IO ByteString
-resolver = mockApi "JSON/Custom/Query"
+resolver = mockApi "JSON/Custom/Errors"
 
 client :: IO (Either (FetchError TestQuery) TestQuery)
 client = fetch resolver ()
 
 test :: TestTree
-test = testCase "test Query" $ do
+test = testCase "test Errors" $ do
   value <- client
   assertEqual
-    "test custom Query"
-    ( Right
-        ( TestQuery
-            { queryTypeName = Just "TestQuery"
-            }
+    "test custom Errors"
+    ( Left
+        ( FetchErrorProducedErrors
+            (GQLError { message = "Failure", locations = [Position {line = 3, column = 7}] } :| [])
+            (Just TestQuery {queryTypeName = Just "TestQuery"})
         )
     )
     value

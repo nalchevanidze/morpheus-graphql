@@ -16,6 +16,7 @@ import Data.ByteString.Lazy.Char8
   )
 import Data.Morpheus.Client
   ( Fetch (..),
+    FetchError,
     gql,
   )
 import Spec.Utils
@@ -48,7 +49,7 @@ defineClientWith
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "Enum"
 
-client :: IO (Either String MyQuery)
+client :: IO (Either (FetchError MyQuery) MyQuery)
 client = fetch resolver MyQueryArgs {inputCity = CityAthens}
 
 test :: TestTree

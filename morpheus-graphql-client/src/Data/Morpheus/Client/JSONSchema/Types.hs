@@ -96,10 +96,11 @@ instance FromJSON EnumValue where
 instance FromJSON a => FromJSON (JSONResponse a) where
   parseJSON = withObject "JSONResponse" objectParser
     where
-      objectParser o = JSONResponse <$> o .:? "data" <*> o .:? "errors"
+      objectParser o =
+        JSONResponse <$> o .:? "data" <*> o .:? "errors" .!= []
 
 data JSONResponse a = JSONResponse
   { responseData :: Maybe a,
-    responseErrors :: Maybe [GQLError]
+    responseErrors :: [GQLError]
   }
   deriving (Generic, Show, ToJSON)

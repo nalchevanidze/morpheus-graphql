@@ -18,6 +18,7 @@ import Data.ByteString.Lazy.Char8
   )
 import Data.Morpheus.Client
   ( Fetch (..),
+    FetchError,
     gql,
   )
 import Data.Text (Text)
@@ -52,7 +53,7 @@ defineClientWithJSON
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "JSON/Custom/Subscription"
 
-client :: IO (Either String TestSubscription)
+client :: IO (Either (FetchError TestSubscription) TestSubscription)
 client = fetch resolver ()
 
 test :: TestTree

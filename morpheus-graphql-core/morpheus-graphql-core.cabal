@@ -1,10 +1,8 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: 93b4af20012846f0b4f8e37c6227b759a1aaf41213fe62ad09ffc07feaeb0f5e
 
 name:           morpheus-graphql-core
 version:        0.17.0
@@ -152,6 +150,7 @@ library
       Data.Morpheus.Core
       Data.Morpheus.QuasiQuoter
       Data.Morpheus.Error
+      Data.Morpheus.Types.Error
       Data.Morpheus.Types.IO
       Data.Morpheus.Types.Internal.AST
       Data.Morpheus.Types.GQLScalar

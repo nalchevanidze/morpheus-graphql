@@ -16,6 +16,7 @@ import Data.ByteString.Lazy.Char8
   )
 import Data.Morpheus.Client
   ( Fetch (..),
+    FetchError(..),
     gql,
   )
 import Data.Text (Text)
@@ -75,7 +76,7 @@ testFloat = 21233.1234145
 testText :: Text
 testText = "Athens"
 
-client :: IO (Either String MyQuery)
+client :: IO (Either (FetchError MyQuery) MyQuery)
 client =
   fetch
     resolver

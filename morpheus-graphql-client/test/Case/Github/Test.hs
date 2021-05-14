@@ -20,6 +20,7 @@ import Data.Morpheus.Client
   ( DecodeScalar (..),
     EncodeScalar (..),
     Fetch (..),
+    FetchError,
     ScalarValue (..),
     gql,
   )
@@ -92,7 +93,7 @@ defineClientWith
 resolver :: ByteString -> IO ByteString
 resolver = mockApi "Interface"
 
-client :: IO (Either String GetTags)
+client :: IO (Either (FetchError GetTags) GetTags)
 client =
   fetch
     resolver

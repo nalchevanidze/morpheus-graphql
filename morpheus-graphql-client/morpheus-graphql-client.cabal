@@ -1,10 +1,8 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
---
--- hash: d59aea46e7b5a980e29efc9a742f08b7e85035af178fc921b3e9176c2e5b449c
 
 name:           morpheus-graphql-client
 version:        0.17.0
@@ -31,7 +29,10 @@ data-files:
     test/Case/Enum/response.json
     test/Case/Github/response.json
     test/Case/Interface/response.json
+    test/Case/JSON/Custom/Errors/response.json
     test/Case/JSON/Custom/Mutation/response.json
+    test/Case/JSON/Custom/NoResponseOrError/response.json
+    test/Case/JSON/Custom/PartialResponse/response.json
     test/Case/JSON/Custom/Query/response.json
     test/Case/JSON/Custom/schema.json
     test/Case/JSON/Custom/Subscription/response.json
@@ -85,7 +86,10 @@ test-suite morpheus-client-test
       Case.Enum.Test
       Case.Github.Test
       Case.Interface.Test
+      Case.JSON.Custom.Errors
       Case.JSON.Custom.Mutation
+      Case.JSON.Custom.NoResponseOrError
+      Case.JSON.Custom.PartialResponse
       Case.JSON.Custom.Query
       Case.JSON.Custom.Subscription
       Case.LowercaseTypeName.Test
