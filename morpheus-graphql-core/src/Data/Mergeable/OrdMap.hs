@@ -12,29 +12,43 @@
 {-# LANGUAGE UndecidableInstances #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 
-module Data.Morpheus.Ext.OrdMap
+module Data.Mergeable.OrdMap
   ( OrdMap (..),
   )
 where
 
 import qualified Data.HashMap.Lazy as HM
-import Data.Mergeable
+import Data.Mergeable.Internal.Merge (Merge (..))
+import Data.Mergeable.Internal.NameCollision (NameCollision (..))
+import Data.Mergeable.Internal.Resolution
   ( Indexed (..),
-    IsMap (..),
-    Merge (..),
-    NameCollision (..),
     indexed,
   )
-import Data.Mergeable.IsMap (FromList (..))
+import Data.Mergeable.IsMap
+  ( FromList (..),
+    IsMap (..),
+  )
 import Data.Morpheus.Ext.Empty (Empty (..))
-import Data.Morpheus.Internal.Utils
+import Data.Morpheus.Ext.Failure
   ( Failure,
-    KeyOf,
-    toPair,
   )
 import Data.Morpheus.Types.Internal.AST.Error (ValidationErrors)
 import Language.Haskell.TH.Syntax (Lift (..))
-import Relude hiding (fromList)
+import Relude
+  ( ($),
+    (.),
+    (<$>),
+    Eq,
+    Foldable (foldMap, toList),
+    Functor (fmap),
+    HashMap,
+    Hashable,
+    Monad,
+    Show,
+    Traversable,
+    map,
+    sortOn,
+  )
 
 -- OrdMap
 newtype OrdMap k a = OrdMap
@@ -79,9 +93,11 @@ instance
   ( NameCollision a,
     Monad m,
     Failure ValidationErrors m,
-    KeyOf k a,
-    Hashable k
+    Hashable k,
+    Eq k
   ) =>
   FromList m OrdMap k a
   where
-  fromList = fmap OrdMap . fromList . map toPair . indexed
+  fromList = fmap OrdMap . fromList . map xyz . indexed
+    where
+      xyz x = (indexedKey x, x)

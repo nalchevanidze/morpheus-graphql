@@ -63,13 +63,11 @@ import Data.Mergeable
   ( IsMap (lookup),
     Merge (..),
     NameCollision (..),
+    OrdMap,
   )
 import Data.Mergeable.SafeHashMap
   ( SafeHashMap,
     toHashMap,
-  )
-import Data.Morpheus.Ext.OrdMap
-  ( OrdMap,
   )
 import Data.Morpheus.Internal.Utils
   ( (<:>),

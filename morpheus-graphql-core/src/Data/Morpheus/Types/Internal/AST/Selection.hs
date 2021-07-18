@@ -34,13 +34,11 @@ import Data.Mergeable
   ( Merge (..),
     MergeMap,
     NameCollision (..),
+    OrdMap,
   )
 import Data.Morpheus.Error.Operation
   ( mutationIsNotDefined,
     subscriptionIsNotDefined,
-  )
-import Data.Morpheus.Ext.OrdMap
-  ( OrdMap,
   )
 import Data.Morpheus.Internal.Utils
   ( (<:>),

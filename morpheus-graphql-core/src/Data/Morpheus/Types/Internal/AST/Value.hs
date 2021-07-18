@@ -45,9 +45,7 @@ import Data.Foldable (foldr')
 import qualified Data.HashMap.Lazy as M
 import Data.Mergeable
   ( NameCollision (..),
-  )
-import Data.Morpheus.Ext.OrdMap
-  ( OrdMap,
+    OrdMap,
   )
 import Data.Morpheus.Internal.Utils
   ( KeyOf (..),

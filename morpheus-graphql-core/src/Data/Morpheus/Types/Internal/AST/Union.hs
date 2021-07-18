@@ -20,8 +20,7 @@ module Data.Morpheus.Types.Internal.AST.Union
   )
 where
 
-import Data.Mergeable
-import Data.Morpheus.Ext.OrdMap
+import Data.Mergeable (NameCollision (..), OrdMap)
 import Data.Morpheus.Internal.Utils
   ( Empty (empty),
     Failure (..),

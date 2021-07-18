@@ -15,7 +15,7 @@ module Data.Morpheus.Validation.Query.UnionSelection
 where
 
 import qualified Data.HashMap.Lazy as HM
-import Data.Morpheus.Ext.OrdMap
+import Data.Mergeable (OrdMap)
 import Data.Morpheus.Internal.Utils
   ( empty,
     fromElems,

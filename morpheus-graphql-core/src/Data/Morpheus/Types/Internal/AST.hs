@@ -158,8 +158,8 @@ module Data.Morpheus.Types.Internal.AST
   )
 where
 
+import Data.Mergeable.OrdMap (OrdMap (..))
 import Data.Mergeable.SafeHashMap (SafeHashMap)
-import Data.Morpheus.Ext.OrdMap (OrdMap (..))
 import Data.Morpheus.Types.Internal.AST.Base
 import Data.Morpheus.Types.Internal.AST.DirectiveLocation (DirectiveLocation (..))
 import Data.Morpheus.Types.Internal.AST.Error

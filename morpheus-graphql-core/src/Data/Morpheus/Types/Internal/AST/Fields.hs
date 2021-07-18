@@ -43,9 +43,7 @@ where
 import Data.Mergeable
   ( IsMap (lookup),
     NameCollision (..),
-  )
-import Data.Morpheus.Ext.OrdMap
-  ( OrdMap,
+    OrdMap,
   )
 import Data.Morpheus.Internal.Utils
   ( Empty (..),
